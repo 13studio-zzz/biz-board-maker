@@ -258,7 +258,7 @@ export function calculateQuote(
 
     const coatingAdd = comp.hasCoating ? (COATING_PRICE[item.coating || 'none'] || 0) : 0;
     const magnetAdd = item.magnetLock && comp.magnetPriceAdd ? comp.magnetPriceAdd : 0;
-
+    const stickerAdd = item.stickerAttach ? 150 : 0; // 라벨 제작 + 수작업 부착 비용
     // Ssabari size surcharge
     const ssabariSurcharge = item.optionId === 'pkg-ssabari' ? getSsabariSizeSurcharge(item.size) : 0;
 
