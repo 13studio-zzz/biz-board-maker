@@ -131,7 +131,8 @@ function getMarginRate(sets: number): number {
   if (sets <= 10) return 0.40;
   if (sets <= 50) return 0.35;
   if (sets <= 100) return 0.30;
-  if (sets <= 500) return 0.22;
+  if (sets <= 300) return 0.25;
+  if (sets <= 500) return 0.20;
   return 0.15;
 }
 
