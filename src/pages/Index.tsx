@@ -210,7 +210,9 @@ const Index = () => {
                 customItems={allCustomItems}
                 components={BOARD_GAME_COMPONENTS}
                 currentSets={sets}
+                pricingTiers={pricingTiers}
               />
+              <AdminSettingsPanel onTiersChange={setPricingTiers} />
             </div>
           </div>
         </div>
