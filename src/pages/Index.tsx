@@ -2,8 +2,10 @@ import { useState, useMemo, useEffect } from 'react';
 import ComponentCard from '@/components/ComponentCard';
 import QuoteSummary from '@/components/QuoteSummary';
 import QuantityComparisonTable from '@/components/QuantityComparisonTable';
+import AdminSettingsPanel from '@/components/AdminSettingsPanel';
 import type { ImportedQuoteData } from '@/components/QuoteSummary';
 import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem, type Selection } from '@/lib/pricing';
+import { type PricingTier, loadTiers } from '@/lib/pricingConfig';
 
 const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
 
