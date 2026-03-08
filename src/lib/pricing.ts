@@ -161,11 +161,12 @@ export function calculateQuote(
   items: QuoteItem[],
   sets: number,
   components: ComponentOption[],
-  customItems: CustomItem[] = []
+  customItems: CustomItem[] = [],
+  tiers: PricingTier[] = DEFAULT_TIERS
 ): QuoteResult {
-  const volumeDiscount = getVolumeDiscount(sets);
-  const handmadeSurcharge = getHandmadeSurcharge(sets);
-  const marginRate = getMarginRate(sets);
+  const volumeDiscount = getVolumeDiscount(sets, tiers);
+  const handmadeSurcharge = getHandmadeSurcharge(sets, tiers);
+  const marginRate = getMarginRate(sets, tiers);
 
   const lineItems: QuoteLineItem[] = [];
   let totalMaterial = 0;
