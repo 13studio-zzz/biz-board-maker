@@ -168,7 +168,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Quantity */}
                         {component.needsQuantity && (
                           <div className="flex items-center gap-3">
-                            <label className="text-xs text-white whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
+                            <label className="text-xs text-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
                             <input
                               type="text"
                               inputMode="numeric"
