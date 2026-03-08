@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
-import type { ComponentOption, SubOption, CustomItem } from '@/lib/pricing';
+import type { ComponentOption, SubOption, CustomItem, Selection } from '@/lib/pricing';
 
 interface Props {
   component: ComponentOption;
-  selected: { optionId: string; quantity: number; sizeNote?: string } | null;
-  onSelect: (optionId: string, quantity: number, sizeNote?: string) => void;
+  selected: Selection | null;
+  onSelect: (sel: Partial<Selection>) => void;
   onDeselect: () => void;
   customItems?: CustomItem[];
   onCustomItemsChange?: (items: CustomItem[]) => void;
@@ -22,19 +22,26 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
       onDeselect();
     } else {
       const defaultQty = component.defaultQuantity || 1;
-      onSelect(opt.id, component.needsQuantity ? defaultQty : 1, selected?.sizeNote);
+      onSelect({
+        optionId: opt.id,
+        quantity: component.needsQuantity ? defaultQty : 1,
+        size: selected?.size,
+        coating: selected?.coating || 'none',
+        material: selected?.material || component.materialOptions?.[0]?.id,
+        finishing: selected?.finishing || component.finishingOptions?.[0]?.id,
+        magnetLock: selected?.magnetLock,
+      });
     }
+  };
+
+  const update = (partial: Partial<Selection>) => {
+    if (!selected) return;
+    onSelect({ ...selected, ...partial });
   };
 
   const addCustomItem = () => {
     if (!onCustomItemsChange) return;
-    const newItem: CustomItem = {
-      id: `custom-${Date.now()}`,
-      name: '',
-      unitPrice: 0,
-      quantity: 1,
-    };
-    onCustomItemsChange([...customItems, newItem]);
+    onCustomItemsChange([...customItems, { id: `custom-${Date.now()}`, name: '', unitPrice: 0, quantity: 1 }]);
   };
 
   const updateCustomItem = (id: string, field: keyof CustomItem, value: string | number) => {
@@ -47,11 +54,16 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
     onCustomItemsChange(customItems.filter(ci => ci.id !== id));
   };
 
-  const activeCount = (isSelected ? 1 : 0) + customItems.length;
+  const activeCount = (isSelected ? 1 : 0) + customItems.filter(ci => ci.name).length;
+  const selectedOpt = selected ? component.options.find(o => o.id === selected.optionId) : null;
+
+  // Show magnet option only for 싸바리
+  const showMagnet = component.hasMagnetOption && selected?.optionId === 'pkg-ssabari';
+  // Show size input for 비규격 카드 or needsSize components
+  const showSize = component.needsSize || (selected?.optionId === 'card-custom');
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
-      {/* Header - always visible */}
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left"
@@ -83,64 +95,177 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 space-y-2">
-              {/* Preset options */}
+              {/* Options */}
               {component.options.map(opt => {
                 const isActive = selected?.optionId === opt.id;
                 return (
-                  <button
-                    key={opt.id}
-                    onClick={() => handleOptionClick(opt)}
-                    className={`w-full text-left p-3 rounded-md border transition-all text-sm ${
-                      isActive
-                        ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
-                        : 'border-border hover:border-primary/30 hover:bg-muted/30'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <span className="font-medium text-card-foreground">{opt.label}</span>
-                        <p className="text-xs text-muted-foreground mt-0.5">{opt.description}</p>
+                  <div key={opt.id}>
+                    <button
+                      onClick={() => handleOptionClick(opt)}
+                      className={`w-full text-left p-3 rounded-md border transition-all text-sm ${
+                        isActive
+                          ? 'border-primary bg-primary/5 ring-1 ring-primary/30'
+                          : 'border-border hover:border-primary/30 hover:bg-muted/30'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <span className="font-medium text-card-foreground">{opt.label}</span>
+                          <p className="text-xs text-muted-foreground mt-0.5">{opt.description}</p>
+                        </div>
                       </div>
-                      <span className="text-xs font-semibold text-primary whitespace-nowrap ml-2">
-                        ₩{opt.basePrice.toLocaleString()}~
-                      </span>
-                    </div>
-                  </button>
+                    </button>
+                    {opt.note && isActive && (
+                      <p className="text-xs text-amber-600 mt-1 ml-1">{opt.note}</p>
+                    )}
+                  </div>
                 );
               })}
 
-              {/* Size input */}
-              {selected && component.needsSize && (
-                <div className="flex items-center gap-3 pt-2 border-t border-border">
-                  <label className="text-xs text-muted-foreground whitespace-nowrap">사이즈:</label>
-                  <input
-                    type="text"
-                    placeholder="예: 300×300×80mm"
-                    value={selected.sizeNote || ''}
-                    onChange={e => onSelect(selected.optionId, selected.quantity, e.target.value)}
-                    className="flex-1 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm"
-                  />
-                </div>
-              )}
+              {/* Component-level notes */}
+              {component.notes?.map((note, i) => (
+                <p key={i} className="text-xs text-muted-foreground">{note}</p>
+              ))}
 
-              {/* Quantity input */}
-              {selected && component.needsQuantity && (
-                <div className="flex items-center gap-3 pt-2 border-t border-border">
-                  <label className="text-xs text-muted-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={9999}
-                    value={selected.quantity}
-                    onChange={e => onSelect(selected.optionId, Math.max(1, parseInt(e.target.value) || 1), selected.sizeNote)}
-                    className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                  />
-                </div>
-              )}
-
-              {/* Deselect */}
+              {/* Additional options when selected */}
               {selected && (
-                <div className="pt-1">
+                <div className="space-y-3 pt-2 border-t border-border">
+                  {/* Size: W × H × D */}
+                  {showSize && (
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">사이즈 (mm)</label>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="text"
+                          placeholder="가로"
+                          value={selected.size?.w || ''}
+                          onChange={e => update({ size: { w: e.target.value, h: selected.size?.h || '', d: selected.size?.d || '' } })}
+                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
+                        />
+                        <span className="text-xs text-muted-foreground">×</span>
+                        <input
+                          type="text"
+                          placeholder="세로"
+                          value={selected.size?.h || ''}
+                          onChange={e => update({ size: { w: selected.size?.w || '', h: e.target.value, d: selected.size?.d || '' } })}
+                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
+                        />
+                        <span className="text-xs text-muted-foreground">×</span>
+                        <input
+                          type="text"
+                          placeholder="높이"
+                          value={selected.size?.d || ''}
+                          onChange={e => update({ size: { w: selected.size?.w || '', h: selected.size?.h || '', d: e.target.value } })}
+                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quantity */}
+                  {component.needsQuantity && (
+                    <div className="flex items-center gap-3">
+                      <label className="text-xs text-muted-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={9999}
+                        value={selected.quantity}
+                        onChange={e => update({ quantity: Math.max(1, parseInt(e.target.value) || 1) })}
+                        className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
+                      />
+                    </div>
+                  )}
+
+                  {/* Material */}
+                  {component.hasMaterial && component.materialOptions && (
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">재질</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {component.materialOptions.map(mat => (
+                          <button
+                            key={mat.id}
+                            onClick={() => update({ material: mat.id })}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                              selected.material === mat.id
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border text-muted-foreground hover:border-primary/30'
+                            }`}
+                          >
+                            {mat.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Finishing */}
+                  {component.hasFinishing && component.finishingOptions && (
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">후가공</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {component.finishingOptions.map(fin => (
+                          <button
+                            key={fin.id}
+                            onClick={() => update({ finishing: fin.id })}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                              selected.finishing === fin.id
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border text-muted-foreground hover:border-primary/30'
+                            }`}
+                          >
+                            {fin.label}
+                          </button>
+                        ))}
+                      </div>
+                      {selected.finishing && component.finishingOptions.find(f => f.id === selected.finishing)?.note && (
+                        <p className="text-xs text-amber-600 mt-1">
+                          {component.finishingOptions.find(f => f.id === selected.finishing)?.note}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Coating */}
+                  {component.hasCoating && (
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">코팅</label>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { id: 'none', label: '없음' },
+                          { id: 'matte', label: '무광' },
+                          { id: 'glossy', label: '유광' },
+                        ].map(c => (
+                          <button
+                            key={c.id}
+                            onClick={() => update({ coating: c.id })}
+                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                              (selected.coating || 'none') === c.id
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border text-muted-foreground hover:border-primary/30'
+                            }`}
+                          >
+                            {c.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Magnet lock */}
+                  {showMagnet && (
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selected.magnetLock || false}
+                        onChange={e => update({ magnetLock: e.target.checked })}
+                        className="rounded border-border"
+                      />
+                      <span className="text-xs text-card-foreground">자석 여닫이 추가 (+₩3,000)</span>
+                    </label>
+                  )}
+
+                  {/* Deselect */}
                   <button onClick={onDeselect} className="text-xs text-destructive hover:underline">선택 해제</button>
                 </div>
               )}

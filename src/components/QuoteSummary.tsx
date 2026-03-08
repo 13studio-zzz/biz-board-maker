@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Download, FileImage } from 'lucide-react';
+import { FileImage } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import type { QuoteResult } from '@/lib/pricing';
 
@@ -55,13 +55,33 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
           <p className="text-sm text-muted-foreground py-8 text-center">구성품을 선택해주세요</p>
         ) : (
           <>
-            <div className="space-y-1.5 mb-4">
+            <div className="space-y-2.5 mb-4">
               {quote.items.map((item, i) => (
-                <div key={i} className="flex justify-between text-sm">
-                  <span className="text-card-foreground truncate mr-2">
-                    {item.name} <span className="text-muted-foreground text-xs">({item.option})</span>
-                  </span>
-                  <span className="font-medium text-card-foreground whitespace-nowrap">{formatW(item.subtotal)}</span>
+                <div key={i} className="text-sm">
+                  <div className="flex justify-between items-start">
+                    <span className="text-card-foreground font-medium truncate mr-2">
+                      {item.name} <span className="text-muted-foreground text-xs font-normal">({item.option})</span>
+                    </span>
+                    <span className="font-semibold text-card-foreground whitespace-nowrap">{formatW(item.subtotal)}</span>
+                  </div>
+                  {/* Details */}
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                    {item.size && (
+                      <span className="text-xs text-muted-foreground">📐 {item.size}</span>
+                    )}
+                    {item.coating && (
+                      <span className="text-xs text-muted-foreground">✨ {item.coating}</span>
+                    )}
+                    {item.material && (
+                      <span className="text-xs text-muted-foreground">📄 {item.material}</span>
+                    )}
+                    {item.finishing && (
+                      <span className="text-xs text-muted-foreground">📋 {item.finishing}</span>
+                    )}
+                    {item.magnetLock && (
+                      <span className="text-xs text-muted-foreground">🧲 자석 여닫이</span>
+                    )}
+                  </div>
                 </div>
               ))}
               {quote.customItems.map((ci, i) => (
@@ -69,7 +89,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
                   <span className="text-card-foreground truncate mr-2">
                     {ci.name || '(미입력)'} <span className="text-muted-foreground text-xs">(직접입력)</span>
                   </span>
-                  <span className="font-medium text-card-foreground whitespace-nowrap">{formatW(ci.subtotal)}</span>
+                  <span className="font-semibold text-card-foreground whitespace-nowrap">{formatW(ci.subtotal)}</span>
                 </div>
               ))}
             </div>
@@ -119,7 +139,6 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
         )}
       </div>
 
-      {/* Export buttons */}
       {hasItems && (
         <div className="px-5 pb-4 flex gap-2 no-print">
           <button
