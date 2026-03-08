@@ -203,7 +203,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Finishing */}
                         {component.hasFinishing && component.finishingOptions && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">후가공</label>
+                            <label className="text-xs text-white mb-1 block">후가공</label>
                             <div className="flex flex-wrap gap-1.5">
                               {component.finishingOptions.map(fin => (
                                 <button
