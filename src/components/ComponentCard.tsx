@@ -212,7 +212,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.finishing === fin.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {fin.label}
