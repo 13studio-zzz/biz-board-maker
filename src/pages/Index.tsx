@@ -75,7 +75,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div>
             <h1 className="text-base font-bold text-foreground">🎲 보드게임 주문제작 견적 시스템</h1>
             <p className="text-xs text-muted-foreground">구성품과 수량을 선택하면 실시간 견적이 산출됩니다</p>
