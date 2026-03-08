@@ -150,7 +150,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                         }
                                       });
                                     }}
-                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,10%,90%)] text-foreground text-sm text-center placeholder:text-[hsl(220,10%,55%)]"
+                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center placeholder:text-muted-foreground"
                                   />
                                 </div>
                               ))}
@@ -173,7 +173,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onBlur={() => {
                                 if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
                               }}
-                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,10%,90%)] text-foreground text-sm text-center"
+                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center"
                             />
                           </div>
                         )}
@@ -190,7 +190,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.material === mat.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {mat.label}
@@ -212,7 +212,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.finishing === fin.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {fin.label}
@@ -243,7 +243,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     (selected.coating || 'none') === c.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {c.label}
