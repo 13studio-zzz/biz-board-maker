@@ -201,31 +201,37 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         )}
 
                         {/* Finishing */}
-                        {component.hasFinishing && component.finishingOptions && (
-                          <div>
-                            <label className="text-xs text-white mb-1 block">후가공</label>
-                            <div className="flex flex-wrap gap-1.5">
-                              {component.finishingOptions.map(fin => (
-                                <button
-                                  key={fin.id}
-                                  onClick={() => update({ finishing: fin.id })}
-                                  className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
-                                    selected.finishing === fin.id
-                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
-                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
-                                  }`}
-                                >
-                                  {fin.label}
-                                </button>
-                              ))}
+                        {component.hasFinishing && component.finishingOptions && (() => {
+                          const activeOpt = component.options.find(o => o.id === selected.optionId);
+                          const filtered = activeOpt?.allowedFinishings
+                            ? component.finishingOptions!.filter(f => activeOpt.allowedFinishings!.includes(f.id))
+                            : component.finishingOptions!;
+                          return filtered.length > 0 ? (
+                            <div>
+                              <label className="text-xs text-white mb-1 block">후가공</label>
+                              <div className="flex flex-wrap gap-1.5">
+                                {filtered.map(fin => (
+                                  <button
+                                    key={fin.id}
+                                    onClick={() => update({ finishing: fin.id })}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                                      selected.finishing === fin.id
+                                        ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
+                                        : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
+                                    }`}
+                                  >
+                                    {fin.label}
+                                  </button>
+                                ))}
+                              </div>
+                              {selected.finishing && filtered.find(f => f.id === selected.finishing)?.note && (
+                                <p className="text-xs text-amber-500 mt-1">
+                                  {filtered.find(f => f.id === selected.finishing)?.note}
+                                </p>
+                              )}
                             </div>
-                            {selected.finishing && component.finishingOptions.find(f => f.id === selected.finishing)?.note && (
-                              <p className="text-xs text-amber-500 mt-1">
-                                {component.finishingOptions.find(f => f.id === selected.finishing)?.note}
-                              </p>
-                            )}
-                          </div>
-                        )}
+                          ) : null;
+                        })()}
 
                         {/* Coating */}
                         {component.hasCoating && (
