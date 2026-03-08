@@ -104,13 +104,13 @@ export interface QuoteLineItem {
 // 수량 구간별 할인율
 function getVolumeDiscount(sets: number): number {
   if (sets <= 3) return 1.0;
-  if (sets <= 10) return 0.92;
-  if (sets <= 30) return 0.82;
-  if (sets <= 50) return 0.72;
-  if (sets <= 100) return 0.62;
-  if (sets <= 300) return 0.52;
-  if (sets <= 500) return 0.45;
-  return 0.38;
+  if (sets <= 10) return 0.90;
+  if (sets <= 30) return 0.78;
+  if (sets <= 50) return 0.68;
+  if (sets <= 100) return 0.58;
+  if (sets <= 300) return 0.48;
+  if (sets <= 500) return 0.40;
+  return 0.32;
 }
 
 // 소량 핸드메이드 할증
