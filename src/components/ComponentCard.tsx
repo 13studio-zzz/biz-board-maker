@@ -115,7 +115,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                       className={`w-full text-left p-3 rounded-md border transition-all text-sm ${
                         isActive
                           ? 'border-[#c1ff99] bg-[#c1ff99]/10 ring-1 ring-[#c1ff99]/40'
-                          : 'border-border hover:border-[#c1ff99]/40 hover:bg-muted/30'
+                          : 'border-border hover:border-primary/60 hover:bg-primary/5 hover:shadow-sm'
                       }`}
                     >
                       <div className="flex justify-between items-start">
