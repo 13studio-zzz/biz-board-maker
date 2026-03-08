@@ -381,8 +381,8 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     options: [
       { id: 'meeple-thomson-s', label: '합지 톰슨 (30×50mm)', description: '합지 톰슨 다이컷 + 투명 거치대 기본 포함, 판 보유', basePrice: 200, setupCost: 0, laborMinutes: 2 },
       { id: 'meeple-thomson-m', label: '합지 톰슨 (35×50mm)', description: '합지 톰슨 다이컷 + 투명 거치대 기본 포함, 판 보유', basePrice: 250, setupCost: 0, laborMinutes: 2 },
-      { id: 'meeple-wood', label: '원목 미플 (기본형)', description: '25mm, 자작나무 레이저컷 + 도색', basePrice: 800, setupCost: 15000, laborMinutes: 5 },
-      { id: 'meeple-acrylic', label: '아크릴 스탠디 (30mm + 받침대)', description: '스티커 부착 가능', basePrice: 1200, setupCost: 25000, laborMinutes: 8 },
+      { id: 'meeple-wood', label: '원목 미플 (기본형)', description: '25mm, 기성품 원목 미플', basePrice: 400, setupCost: 0, laborMinutes: 1 },
+      { id: 'meeple-acrylic', label: '아크릴 스탠디 (30mm + 받침대)', description: '스티커 부착 가능', basePrice: 700, setupCost: 15000, laborMinutes: 4 },
       { id: 'meeple-plastic', label: '사출 플라스틱 말', description: '금형 사출, 단색, 30mm', basePrice: 300, setupCost: 500000, laborMinutes: 1, note: '⚠️ 1,000세트 이상 권장. 소량은 기성품 사용을 추천합니다.' },
     ],
     notes: ['💡 합지 톰슨은 투명 거치대가 기본 포함됩니다.'],
