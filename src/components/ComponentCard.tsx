@@ -74,22 +74,24 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
     <div className={`border rounded-lg overflow-hidden shadow-sm transition-shadow ${isSelected ? 'border-primary/40 bg-card shadow-md' : 'border-border bg-card hover:shadow-sm'}`}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left border-b border-border ${isSelected ? 'bg-[#2b2b2b]' : 'bg-muted/30 hover:bg-muted/50'}`}
+        className="w-full flex items-center justify-between px-5 py-4 transition-colors text-left border-b border-border bg-card hover:bg-muted/30"
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">{component.icon}</span>
           <div>
-            <h3 className={`font-bold text-base ${isSelected ? 'text-[#c1ff99]' : 'text-card-foreground'}`}>{component.name}</h3>
-            <p className={`text-xs mt-0.5 ${isSelected ? 'text-white/60' : 'text-muted-foreground'}`}>{component.description}</p>
+            <h3 className={`font-bold text-[15px] tracking-tight ${isSelected ? 'text-primary-foreground' : 'text-foreground'}`} style={isSelected ? { color: '#1a7a3a' } : {}}>
+              {component.name}
+            </h3>
+            <p className="text-xs mt-0.5 text-muted-foreground">{component.description}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {activeCount > 0 && (
-            <span className="text-xs bg-[#c1ff99] text-[#2b2b2b] px-2.5 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full font-bold">
               {activeCount}개 선택
             </span>
           )}
-          {expanded ? <ChevronUp className={`w-4 h-4 ${isSelected ? 'text-white/50' : 'text-muted-foreground'}`} /> : <ChevronDown className={`w-4 h-4 ${isSelected ? 'text-white/50' : 'text-muted-foreground'}`} />}
+          {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </div>
       </button>
 
