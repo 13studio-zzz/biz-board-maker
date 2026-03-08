@@ -1,22 +1,24 @@
 import { useMemo } from 'react';
 import { calculateQuote, type QuoteItem, type CustomItem, type ComponentOption } from '@/lib/pricing';
+import { type PricingTier, DEFAULT_TIERS } from '@/lib/pricingConfig';
 
 interface Props {
   quoteItems: QuoteItem[];
   customItems: CustomItem[];
   components: ComponentOption[];
   currentSets: number;
+  pricingTiers?: PricingTier[];
 }
 
 const COMPARE_QUANTITIES = [1, 10, 100, 500, 1000];
 
-const QuantityComparisonTable = ({ quoteItems, customItems, components, currentSets }: Props) => {
+const QuantityComparisonTable = ({ quoteItems, customItems, components, currentSets, pricingTiers = DEFAULT_TIERS }: Props) => {
   const comparisons = useMemo(() => {
     return COMPARE_QUANTITIES.map(sets => {
-      const quote = calculateQuote(quoteItems, sets, components, customItems);
+      const quote = calculateQuote(quoteItems, sets, components, customItems, pricingTiers);
       return { sets, total: quote.total, unitPrice: quote.unitPrice };
     });
-  }, [quoteItems, customItems, components]);
+  }, [quoteItems, customItems, components, pricingTiers]);
 
   const formatW = (n: number) => `₩${n.toLocaleString()}`;
   const hasItems = quoteItems.length > 0 || customItems.length > 0;

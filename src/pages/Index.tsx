@@ -2,13 +2,16 @@ import { useState, useMemo, useEffect } from 'react';
 import ComponentCard from '@/components/ComponentCard';
 import QuoteSummary from '@/components/QuoteSummary';
 import QuantityComparisonTable from '@/components/QuantityComparisonTable';
+import AdminSettingsPanel from '@/components/AdminSettingsPanel';
 import type { ImportedQuoteData } from '@/components/QuoteSummary';
 import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem, type Selection } from '@/lib/pricing';
+import { type PricingTier, loadTiers } from '@/lib/pricingConfig';
 
 const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
 
 const Index = () => {
   const [sets, setSets] = useState(1);
+  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>(loadTiers);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
   const [enabledComponents, setEnabledComponents] = useState<Record<string, boolean>>(
@@ -71,8 +74,8 @@ const Index = () => {
   );
 
   const quote = useMemo(() =>
-    calculateQuote(quoteItems, sets, BOARD_GAME_COMPONENTS, allCustomItems),
-    [quoteItems, sets, allCustomItems]
+    calculateQuote(quoteItems, sets, BOARD_GAME_COMPONENTS, allCustomItems, pricingTiers),
+    [quoteItems, sets, allCustomItems, pricingTiers]
   );
 
   return (
@@ -207,7 +210,9 @@ const Index = () => {
                 customItems={allCustomItems}
                 components={BOARD_GAME_COMPONENTS}
                 currentSets={sets}
+                pricingTiers={pricingTiers}
               />
+              <AdminSettingsPanel onTiersChange={setPricingTiers} />
             </div>
           </div>
         </div>
