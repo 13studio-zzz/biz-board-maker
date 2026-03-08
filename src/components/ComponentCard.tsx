@@ -275,7 +275,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onChange={e => update({ magnetLock: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-[hsl(220,10%,80%)]">자석 여닫이 추가 (+₩3,000)</span>
+                            <span className="text-xs text-white">자석 여닫이 추가 (+₩3,000)</span>
                           </label>
                         )}
 
