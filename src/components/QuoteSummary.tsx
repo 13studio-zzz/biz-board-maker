@@ -211,16 +211,17 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
           <p className="text-sm text-muted-foreground py-8 text-center">구성품을 선택해주세요</p>
         ) : (
           <>
-            <div className="space-y-2.5 mb-4">
+            <div className="space-y-1 mb-4">
               {quote.items.map((item, i) => (
-                <div key={i} className="text-sm">
+                <div key={i} className="text-sm rounded-md border border-border/50 bg-muted/30 p-2.5">
                   <div className="flex justify-between items-start">
                     <span className="text-card-foreground font-medium truncate mr-2">
                       {item.name} <span className="text-muted-foreground text-xs font-normal">({item.option})</span>
                     </span>
                     <span className="font-semibold text-card-foreground whitespace-nowrap">{formatW(item.subtotal)}</span>
                   </div>
-                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+                    <span className="text-xs text-muted-foreground">🔢 {item.quantity}개</span>
                     {item.size && (
                       <span className="text-xs text-muted-foreground">📐 {item.size}</span>
                     )}
@@ -243,7 +244,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
                 </div>
               ))}
               {quote.customItems.map((ci, i) => (
-                <div key={`c-${i}`} className="flex justify-between text-sm">
+                <div key={`c-${i}`} className="text-sm rounded-md border border-border/50 bg-muted/30 p-2.5 flex justify-between">
                   <span className="text-card-foreground truncate mr-2">
                     {ci.name || '(미입력)'} <span className="text-muted-foreground text-xs">(직접입력)</span>
                   </span>
