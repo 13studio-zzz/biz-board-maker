@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import ComponentCard from '@/components/ComponentCard';
 import QuoteSummary from '@/components/QuoteSummary';
-import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem } from '@/lib/pricing';
+import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem, type Selection } from '@/lib/pricing';
 
 const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
 
@@ -10,11 +9,14 @@ const Index = () => {
   const [sets, setSets] = useState(10);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
-  const [selections, setSelections] = useState<Record<string, { optionId: string; quantity: number; sizeNote?: string }>>({});
+  const [selections, setSelections] = useState<Record<string, Selection>>({});
   const [customItemsMap, setCustomItemsMap] = useState<Record<string, CustomItem[]>>({});
 
-  const handleSelect = (compId: string, optionId: string, quantity: number, sizeNote?: string) => {
-    setSelections(prev => ({ ...prev, [compId]: { optionId, quantity, sizeNote } }));
+  const handleSelect = (compId: string, sel: Partial<Selection>) => {
+    setSelections(prev => ({
+      ...prev,
+      [compId]: { ...prev[compId], ...sel } as Selection,
+    }));
   };
 
   const handleDeselect = (compId: string) => {
@@ -34,7 +36,11 @@ const Index = () => {
       componentId,
       optionId: sel.optionId,
       quantity: sel.quantity,
-      sizeNote: sel.sizeNote,
+      size: sel.size,
+      coating: sel.coating,
+      material: sel.material,
+      finishing: sel.finishing,
+      magnetLock: sel.magnetLock,
     })),
     [selections]
   );
@@ -51,7 +57,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
@@ -119,14 +124,13 @@ const Index = () => {
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
               {sets <= 10 ? '🔧 소량: 완전 핸드메이드 공정' :
-               sets <= 100 ? '⚙️ 중량: 반자동 공정 적용' :
-               '🏭 대량: 소규모 양산 체계'}
+                sets <= 100 ? '⚙️ 중량: 반자동 공정 적용' :
+                '🏭 대량: 소규모 양산 체계'}
             </p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-5 gap-5">
-          {/* 구성품 선택 */}
           <div className="lg:col-span-3 space-y-2">
             <h2 className="font-bold text-foreground text-sm mb-2">구성품 선택</h2>
             {BOARD_GAME_COMPONENTS.map((comp) => (
@@ -134,7 +138,7 @@ const Index = () => {
                 key={comp.id}
                 component={comp}
                 selected={selections[comp.id] || null}
-                onSelect={(optId, qty, sizeNote) => handleSelect(comp.id, optId, qty, sizeNote)}
+                onSelect={(sel) => handleSelect(comp.id, sel)}
                 onDeselect={() => handleDeselect(comp.id)}
                 customItems={customItemsMap[comp.id] || []}
                 onCustomItemsChange={comp.allowCustom ? (items) => handleCustomItems(comp.id, items) : undefined}
@@ -142,7 +146,6 @@ const Index = () => {
             ))}
           </div>
 
-          {/* 견적 요약 */}
           <div className="lg:col-span-2">
             <QuoteSummary quote={quote} sets={sets} projectName={projectName} clientName={clientName} />
           </div>
