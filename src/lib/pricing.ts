@@ -120,7 +120,7 @@ function getHandmadeSurcharge(sets: number): number {
   if (sets <= 30) return 1.4;
   if (sets <= 50) return 1.15;
   if (sets <= 100) return 1.0;
-  return 0.9;
+  return 0.85;
 }
 
 const LABOR_RATE_PER_HOUR = 25000;
