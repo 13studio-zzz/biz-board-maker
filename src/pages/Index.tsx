@@ -11,6 +11,9 @@ const Index = () => {
   const [sets, setSets] = useState(10);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
+  const [enabledComponents, setEnabledComponents] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(BOARD_GAME_COMPONENTS.map(c => [c.id, true]))
+  );
   const [selections, setSelections] = useState<Record<string, Selection>>({});
   const [customItemsMap, setCustomItemsMap] = useState<Record<string, CustomItem[]>>({});
 
