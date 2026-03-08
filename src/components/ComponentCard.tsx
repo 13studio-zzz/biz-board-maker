@@ -74,22 +74,24 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
     <div className={`border rounded-lg overflow-hidden shadow-sm transition-shadow ${isSelected ? 'border-primary/40 bg-card shadow-md' : 'border-border bg-card hover:shadow-sm'}`}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className={`w-full flex items-center justify-between px-5 py-4 transition-colors text-left border-b border-border ${isSelected ? 'bg-[#2b2b2b]' : 'bg-muted/30 hover:bg-muted/50'}`}
+        className="w-full flex items-center justify-between px-5 py-4 transition-colors text-left border-b border-border bg-card hover:bg-muted/30"
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">{component.icon}</span>
           <div>
-            <h3 className={`font-bold text-base ${isSelected ? 'text-[#c1ff99]' : 'text-card-foreground'}`}>{component.name}</h3>
-            <p className={`text-xs mt-0.5 ${isSelected ? 'text-white/60' : 'text-muted-foreground'}`}>{component.description}</p>
+            <h3 className={`font-bold text-[15px] tracking-tight ${isSelected ? 'text-emerald-700' : 'text-foreground'}`}>
+              {component.name}
+            </h3>
+            <p className="text-xs mt-0.5 text-muted-foreground">{component.description}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {activeCount > 0 && (
-            <span className="text-xs bg-[#c1ff99] text-[#2b2b2b] px-2.5 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full font-bold">
               {activeCount}개 선택
             </span>
           )}
-          {expanded ? <ChevronUp className={`w-4 h-4 ${isSelected ? 'text-white/50' : 'text-muted-foreground'}`} /> : <ChevronDown className={`w-4 h-4 ${isSelected ? 'text-white/50' : 'text-muted-foreground'}`} />}
+          {expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
         </div>
       </button>
 
@@ -129,17 +131,17 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
 
                     {/* 상세설정 - 선택된 옵션 바로 아래 표시 */}
                     {isActive && selected && (
-                      <div className="mt-1 space-y-3 rounded-lg bg-[hsl(220,20%,14%)] p-4 border border-[hsl(220,15%,25%)]">
-                        <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">상세 설정</p>
+                      <div className="mt-2 space-y-3 rounded-lg bg-muted/60 p-4 border border-border">
+                        <p className="text-xs font-semibold text-foreground uppercase tracking-wide">상세 설정</p>
 
                         {/* Size fields */}
                         {showSize && (
                           <div>
-                            <label className="text-xs text-white mb-1 block">사이즈 (mm)</label>
+                            <label className="text-xs text-foreground mb-1 block">사이즈 (mm)</label>
                             <div className="flex items-center gap-1.5">
                               {sizeFields.map((field, idx) => (
                                 <div key={field} className="flex items-center gap-1.5">
-                                  {idx > 0 && <span className="text-xs text-white/50">×</span>}
+                                  {idx > 0 && <span className="text-xs text-muted-foreground">×</span>}
                                   <input
                                     type="text"
                                     inputMode="numeric"
@@ -155,7 +157,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                         }
                                       });
                                     }}
-                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center placeholder:text-muted-foreground"
+                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center placeholder:text-muted-foreground"
                                   />
                                 </div>
                               ))}
@@ -166,7 +168,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Quantity */}
                         {component.needsQuantity && (
                           <div className="flex items-center gap-3">
-                            <label className="text-xs text-white whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
+                            <label className="text-xs text-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
                             <input
                               type="text"
                               inputMode="numeric"
@@ -178,7 +180,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onBlur={() => {
                                 if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
                               }}
-                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center"
+                              className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
                             />
                           </div>
                         )}
@@ -186,7 +188,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Material */}
                         {component.hasMaterial && component.materialOptions && (
                           <div>
-                            <label className="text-xs text-white mb-1 block">재질</label>
+                            <label className="text-xs text-foreground mb-1 block">재질</label>
                             <div className="flex flex-wrap gap-1.5">
                               {component.materialOptions.map(mat => (
                                 <button
@@ -194,8 +196,8 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   onClick={() => update({ material: mat.id })}
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.material === mat.id
-                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
-                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
+                                      ? 'border-primary bg-primary/20 text-foreground font-bold'
+                                      : 'border-input bg-background text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {mat.label}
@@ -213,7 +215,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                             : component.finishingOptions!;
                           return filtered.length > 0 ? (
                             <div>
-                              <label className="text-xs text-white mb-1 block">후가공</label>
+                              <label className="text-xs text-foreground mb-1 block">후가공</label>
                               <div className="flex flex-wrap gap-1.5">
                                 {filtered.map(fin => (
                                   <button
@@ -221,8 +223,8 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                     onClick={() => update({ finishing: fin.id })}
                                     className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                       selected.finishing === fin.id
-                                        ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
-                                        : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
+                                        ? 'border-primary bg-primary/20 text-foreground font-bold'
+                                        : 'border-input bg-background text-foreground hover:border-primary/40'
                                     }`}
                                   >
                                     {fin.label}
@@ -241,7 +243,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Coating */}
                         {component.hasCoating && (
                           <div>
-                            <label className="text-xs text-white mb-1 block">코팅</label>
+                            <label className="text-xs text-foreground mb-1 block">코팅</label>
                             <div className="flex flex-wrap gap-1.5">
                               {[
                                 { id: 'none', label: '없음' },
@@ -253,8 +255,8 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   onClick={() => update({ coating: c.id })}
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     (selected.coating || 'none') === c.id
-                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
-                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
+                                      ? 'border-primary bg-primary/20 text-foreground font-bold'
+                                      : 'border-input bg-background text-foreground hover:border-primary/40'
                                   }`}
                                 >
                                   {c.label}
@@ -272,9 +274,9 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               type="checkbox"
                               checked={selected.stickerAttach || false}
                               onChange={e => update({ stickerAttach: e.target.checked })}
-                              className="rounded border-[hsl(220,15%,30%)]"
+                              className="rounded border-input"
                             />
-                            <span className="text-xs text-white">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
+                            <span className="text-xs text-foreground">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
                           </label>
                           </label>
                         )}
@@ -286,9 +288,9 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               type="checkbox"
                               checked={selected.magnetLock || false}
                               onChange={e => update({ magnetLock: e.target.checked })}
-                              className="rounded border-[hsl(220,15%,30%)]"
+                              className="rounded border-input"
                             />
-                            <span className="text-xs text-white">자석 여닫이 추가 (+₩3,000)</span>
+                            <span className="text-xs text-foreground">자석 여닫이 추가 (+₩3,000)</span>
                           </label>
                         )}
 
@@ -350,7 +352,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                   ))}
                   <button
                     onClick={addCustomItem}
-                    className="flex items-center gap-1 text-xs font-medium bg-[#2b2b2b] text-[#c1ff99] px-3 py-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
+                    className="flex items-center gap-1 text-xs font-medium bg-muted text-foreground px-3 py-2 rounded-md hover:bg-muted/80 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> 항목 추가
                   </button>
