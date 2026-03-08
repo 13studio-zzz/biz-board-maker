@@ -129,8 +129,8 @@ function getMarginRate(sets: number): number {
   if (sets <= 10) return 0.40;
   if (sets <= 50) return 0.35;
   if (sets <= 100) return 0.30;
-  if (sets <= 500) return 0.25;
-  return 0.20;
+  if (sets <= 500) return 0.22;
+  return 0.15;
 }
 
 const COATING_PRICE: Record<string, number> = {
