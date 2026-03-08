@@ -189,7 +189,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="rounded-lg border border-border bg-card sticky top-20"
+      className="rounded-lg border border-border bg-card"
     >
       <div ref={summaryRef} className="p-5">
         <div className="flex items-center justify-between mb-1">

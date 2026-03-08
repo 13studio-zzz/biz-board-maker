@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import ComponentCard from '@/components/ComponentCard';
 import QuoteSummary from '@/components/QuoteSummary';
+import QuantityComparisonTable from '@/components/QuantityComparisonTable';
 import type { ImportedQuoteData } from '@/components/QuoteSummary';
 import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem, type Selection } from '@/lib/pricing';
 
@@ -72,7 +73,7 @@ const Index = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border bg-card sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
@@ -82,7 +83,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-5">
+      <main className="max-w-6xl mx-auto px-4 py-5 flex-1">
         {/* 프로젝트 정보 + 수량 */}
         <div className="mb-5 p-4 rounded-lg border border-border bg-card space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -163,16 +164,30 @@ const Index = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <QuoteSummary
-              quote={quote}
-              sets={sets}
-              projectName={projectName}
-              clientName={clientName}
-              onImportQuote={handleImportQuote}
-            />
+            <div className="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto space-y-4 pr-1">
+              <QuoteSummary
+                quote={quote}
+                sets={sets}
+                projectName={projectName}
+                clientName={clientName}
+                onImportQuote={handleImportQuote}
+              />
+              <QuantityComparisonTable
+                quoteItems={quoteItems}
+                customItems={allCustomItems}
+                components={BOARD_GAME_COMPONENTS}
+                currentSets={sets}
+              />
+            </div>
           </div>
         </div>
       </main>
+
+      <footer className="border-t border-border bg-card mt-12">
+        <div className="max-w-6xl mx-auto px-4 py-6 text-center">
+          <p className="text-xs text-muted-foreground">© 2025 보드게임 주문제작 견적 시스템 · 모든 가격은 VAT 별도입니다</p>
+        </div>
+      </footer>
     </div>
   );
 };
