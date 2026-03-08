@@ -180,7 +180,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onBlur={() => {
                                 if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
                               }}
-                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center"
+                              className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
                             />
                           </div>
                         )}
