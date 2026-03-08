@@ -137,7 +137,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Size fields */}
                         {showSize && (
                           <div>
-                            <label className="text-xs text-white mb-1 block">사이즈 (mm)</label>
+                            <label className="text-xs text-foreground mb-1 block">사이즈 (mm)</label>
                             <div className="flex items-center gap-1.5">
                               {sizeFields.map((field, idx) => (
                                 <div key={field} className="flex items-center gap-1.5">
