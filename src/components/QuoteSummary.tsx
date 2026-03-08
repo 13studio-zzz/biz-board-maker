@@ -315,7 +315,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
           </div>
         )}
         <button
-          onClick={importFromJson}
+          onClick={importFromCsv}
           className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-muted-foreground text-sm hover:bg-muted transition-colors"
         >
           <Upload className="w-4 h-4" /> 견적 불러오기
