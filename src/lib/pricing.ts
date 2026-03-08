@@ -33,6 +33,7 @@ export interface SubOption {
   setupCost: number;
   laborMinutes: number;
   note?: string;
+  allowedFinishings?: string[];
 }
 
 export interface CustomItem {
