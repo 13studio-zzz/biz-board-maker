@@ -134,7 +134,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                             <div className="flex items-center gap-1.5">
                               {sizeFields.map((field, idx) => (
                                 <div key={field} className="flex items-center gap-1.5">
-                                  {idx > 0 && <span className="text-xs text-[hsl(220,10%,55%)]">×</span>}
+                                  {idx > 0 && <span className="text-xs text-white/50">×</span>}
                                   <input
                                     type="text"
                                     inputMode="numeric"
