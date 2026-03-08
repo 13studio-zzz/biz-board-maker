@@ -373,7 +373,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     hasMaterial: true,
     materialOptions: [
       { id: 'mat-300g', label: '300g (스노우/아트지)', priceMultiplier: 0.08 },
-      { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 1.8 },
+      { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 2.5 },
     ],
     sortOrder: 2,
     options: [
