@@ -324,9 +324,9 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     ],
     sortOrder: 2,
     options: [
-      { id: 'board-fold2', label: '2단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 4000, setupCost: 40000, laborMinutes: 25 },
-      { id: 'board-fold4', label: '4단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 7000, setupCost: 60000, laborMinutes: 40 },
-      { id: 'board-flat', label: '평판형 (1장)', description: '하드보드 + 인쇄', basePrice: 5500, setupCost: 35000, laborMinutes: 15 },
+      { id: 'board-fold2', label: '2단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 4000, setupCost: 30000, laborMinutes: 20 },
+      { id: 'board-fold4', label: '4단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 7000, setupCost: 45000, laborMinutes: 30 },
+      { id: 'board-flat', label: '평판형 (1장)', description: '하드보드 + 인쇄', basePrice: 5500, setupCost: 25000, laborMinutes: 10 },
     ],
     notes: ['💡 300g(스노우/아트지)는 인쇄+코팅+라운딩만 하는 저가 개인보드판 방식입니다.'],
   },
