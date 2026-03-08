@@ -181,7 +181,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Material */}
                         {component.hasMaterial && component.materialOptions && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">재질</label>
+                            <label className="text-xs text-white mb-1 block">재질</label>
                             <div className="flex flex-wrap gap-1.5">
                               {component.materialOptions.map(mat => (
                                 <button
