@@ -223,7 +223,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                     onClick={() => update({ finishing: fin.id })}
                                     className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                       selected.finishing === fin.id
-                                        ? 'border-primary bg-primary/20 text-foreground font-bold'
+                                        ? 'border-[#2b2b2b] bg-[#2b2b2b] text-primary font-bold'
                                         : 'border-input bg-background text-foreground hover:border-primary/40'
                                     }`}
                                   >
