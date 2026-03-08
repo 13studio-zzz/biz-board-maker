@@ -277,7 +277,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-xs text-muted-foreground">총 견적가 ({sets}세트, VAT 별도)</p>
-                  <p className="text-xl font-bold text-primary">{formatW(quote.total)}</p>
+                  <p className="text-xl font-bold text-blue-600">{formatW(quote.total)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-muted-foreground">세트당 단가</p>
