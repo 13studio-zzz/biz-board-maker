@@ -189,7 +189,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   onClick={() => update({ material: mat.id })}
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.material === mat.id
-                                      ? 'border-primary bg-primary/20 text-primary'
+                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
                                       : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
@@ -211,7 +211,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   onClick={() => update({ finishing: fin.id })}
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.finishing === fin.id
-                                      ? 'border-primary bg-primary/20 text-primary'
+                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
                                       : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
@@ -242,7 +242,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   onClick={() => update({ coating: c.id })}
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     (selected.coating || 'none') === c.id
-                                      ? 'border-primary bg-primary/20 text-primary'
+                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
                                       : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
                                   }`}
                                 >
