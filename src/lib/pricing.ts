@@ -194,6 +194,55 @@ export function calculateQuote(
 
     const qty = item.quantity || 1;
 
+    // Special fixed pricing for 300g board
+    const is300gBoard = comp.id === 'board' && item.material === 'mat-300g';
+    if (is300gBoard) {
+      const baseFixed = 15000;
+      // A3 surcharge: A3 = 297x420, check if either dimension exceeds
+      let sizeSurcharge = 0;
+      if (item.size) {
+        const w = parseInt(item.size.w) || 0;
+        const h = parseInt(item.size.h) || 0;
+        if (w > 420 || h > 420 || (w > 297 && h > 297)) {
+          sizeSurcharge = 10000;
+        }
+      }
+      const unitFixed = baseFixed + sizeSurcharge;
+      // First board full price, additional at 50%
+      const totalForQty = qty <= 1 ? unitFixed : unitFixed + (qty - 1) * Math.round(unitFixed * 0.5);
+      const coatingAdd = comp.hasCoating ? (COATING_PRICE[item.coating || 'none'] || 0) : 0;
+      const materialForSets = (totalForQty + coatingAdd * qty) * sets;
+      const laborForSets = 0;
+      const setupForAll = 0;
+
+      let sizeStr: string | undefined;
+      if (item.size) {
+        const fields = comp.sizeFields || ['w', 'h'];
+        const parts = fields.map(f => item.size![f]).filter(Boolean);
+        if (parts.length > 0) sizeStr = parts.join('×') + 'mm';
+      }
+
+      lineItems.push({
+        name: comp.name,
+        option: opt.label,
+        quantity: qty,
+        materialCost: Math.round(materialForSets),
+        laborCost: 0,
+        setupCost: 0,
+        subtotal: Math.round(materialForSets),
+        size: sizeStr,
+        coating: comp.hasCoating && item.coating && item.coating !== 'none' ? getCoatingLabel(item.coating) : undefined,
+        material: comp.materialOptions?.find(m => m.id === item.material)?.label,
+        finishing: undefined,
+        magnetLock: false,
+        stickerAttach: false,
+        sortOrder: comp.sortOrder,
+      });
+
+      totalMaterial += materialForSets;
+      continue;
+    }
+
     let materialMultiplier = 1;
     if (item.material && comp.materialOptions) {
       const mat = comp.materialOptions.find(m => m.id === item.material);
