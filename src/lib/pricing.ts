@@ -474,10 +474,9 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     sortOrder: 7,
     options: [
       { id: 'token-plastic', label: '플라스틱 토큰', description: '기성품, 가벼운 소재, 가성비 최고', basePrice: 100, setupCost: 0, laborMinutes: 0.5 },
-      { id: 'token-cardboard', label: '판지 토큰 (펀칭)', description: '2mm 회색판지, 양면 인쇄 + 다이컷', basePrice: 80, setupCost: 50000, laborMinutes: 0.5 },
+      { id: 'token-acrylic', label: '아크릴 토큰', description: '고분자 플라스틱, 고급칩', basePrice: 500, setupCost: 25000, laborMinutes: 2 },
+      { id: 'token-cardboard', label: '판지 토큰 (펀칭&톰슨)', description: '2mm 회색판지, 양면 인쇄 + 다이컷', basePrice: 80, setupCost: 50000, laborMinutes: 0.5 },
       { id: 'token-wood', label: '원목 토큰', description: '원형, 레이저각인 또는 인쇄', basePrice: 300, setupCost: 20000, laborMinutes: 3 },
-      { id: 'token-acrylic', label: '아크릴 토큰', description: '3mm 아크릴, UV인쇄', basePrice: 500, setupCost: 25000, laborMinutes: 2 },
-      { id: 'token-metal', label: '금속 코인', description: '아연합금, 양면 각인 + 에나멜', basePrice: 2000, setupCost: 200000, laborMinutes: 1 },
     ],
   },
   {
