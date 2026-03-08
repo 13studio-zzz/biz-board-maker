@@ -288,7 +288,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               type="checkbox"
                               checked={selected.magnetLock || false}
                               onChange={e => update({ magnetLock: e.target.checked })}
-                              className="rounded border-[hsl(220,15%,30%)]"
+                              className="rounded border-input"
                             />
                             <span className="text-xs text-white">자석 여닫이 추가 (+₩3,000)</span>
                           </label>
