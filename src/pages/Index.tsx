@@ -74,8 +74,8 @@ const Index = () => {
   );
 
   const quote = useMemo(() =>
-    calculateQuote(quoteItems, sets, BOARD_GAME_COMPONENTS, allCustomItems),
-    [quoteItems, sets, allCustomItems]
+    calculateQuote(quoteItems, sets, BOARD_GAME_COMPONENTS, allCustomItems, pricingTiers),
+    [quoteItems, sets, allCustomItems, pricingTiers]
   );
 
   return (
