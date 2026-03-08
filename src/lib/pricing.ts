@@ -104,13 +104,13 @@ export interface QuoteLineItem {
 // 수량 구간별 할인율
 function getVolumeDiscount(sets: number): number {
   if (sets <= 3) return 1.0;
-  if (sets <= 10) return 0.92;
-  if (sets <= 30) return 0.82;
-  if (sets <= 50) return 0.72;
-  if (sets <= 100) return 0.62;
-  if (sets <= 300) return 0.52;
-  if (sets <= 500) return 0.45;
-  return 0.38;
+  if (sets <= 10) return 0.90;
+  if (sets <= 30) return 0.78;
+  if (sets <= 50) return 0.68;
+  if (sets <= 100) return 0.58;
+  if (sets <= 300) return 0.48;
+  if (sets <= 500) return 0.40;
+  return 0.32;
 }
 
 // 소량 핸드메이드 할증
@@ -120,7 +120,7 @@ function getHandmadeSurcharge(sets: number): number {
   if (sets <= 30) return 1.4;
   if (sets <= 50) return 1.15;
   if (sets <= 100) return 1.0;
-  return 0.9;
+  return 0.85;
 }
 
 const LABOR_RATE_PER_HOUR = 25000;
@@ -129,8 +129,8 @@ function getMarginRate(sets: number): number {
   if (sets <= 10) return 0.40;
   if (sets <= 50) return 0.35;
   if (sets <= 100) return 0.30;
-  if (sets <= 500) return 0.25;
-  return 0.20;
+  if (sets <= 500) return 0.22;
+  return 0.15;
 }
 
 const COATING_PRICE: Record<string, number> = {
@@ -474,10 +474,9 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     sortOrder: 7,
     options: [
       { id: 'token-plastic', label: '플라스틱 토큰', description: '기성품, 가벼운 소재, 가성비 최고', basePrice: 100, setupCost: 0, laborMinutes: 0.5 },
-      { id: 'token-cardboard', label: '판지 토큰 (펀칭)', description: '2mm 회색판지, 양면 인쇄 + 다이컷', basePrice: 80, setupCost: 50000, laborMinutes: 0.5 },
+      { id: 'token-acrylic', label: '아크릴 토큰', description: '고분자 플라스틱, 고급칩', basePrice: 500, setupCost: 25000, laborMinutes: 2 },
+      { id: 'token-cardboard', label: '판지 토큰 (펀칭&톰슨)', description: '2mm 회색판지, 양면 인쇄 + 다이컷', basePrice: 80, setupCost: 50000, laborMinutes: 0.5 },
       { id: 'token-wood', label: '원목 토큰', description: '원형, 레이저각인 또는 인쇄', basePrice: 300, setupCost: 20000, laborMinutes: 3 },
-      { id: 'token-acrylic', label: '아크릴 토큰', description: '3mm 아크릴, UV인쇄', basePrice: 500, setupCost: 25000, laborMinutes: 2 },
-      { id: 'token-metal', label: '금속 코인', description: '아연합금, 양면 각인 + 에나멜', basePrice: 2000, setupCost: 200000, laborMinutes: 1 },
     ],
   },
   {
