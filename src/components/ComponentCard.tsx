@@ -262,13 +262,15 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Sticker attach */}
                         {component.hasSticker && (
                           <label className="flex items-center gap-2 cursor-pointer">
+                          <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={selected.stickerAttach || false}
                               onChange={e => update({ stickerAttach: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-white">스티커 부착</span>
+                            <span className="text-xs text-white">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
+                          </label>
                           </label>
                         )}
 
