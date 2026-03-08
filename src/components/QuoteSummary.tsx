@@ -251,8 +251,6 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
                   <span className="font-semibold text-card-foreground whitespace-nowrap">{formatW(ci.subtotal)}</span>
                 </div>
               ))}
-                </div>
-              ))}
             </div>
 
             <div className="border-t border-border pt-3 space-y-1 text-sm">
