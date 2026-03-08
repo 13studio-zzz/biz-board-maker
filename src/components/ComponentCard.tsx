@@ -121,6 +121,168 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                     {opt.note && isActive && (
                       <p className="text-xs text-amber-600 mt-1 ml-1">{opt.note}</p>
                     )}
+
+                    {/* 상세설정 - 선택된 옵션 바로 아래 표시 */}
+                    {isActive && selected && (
+                      <div className="mt-1 space-y-3 rounded-lg bg-[hsl(220,20%,14%)] p-4 border border-[hsl(220,15%,25%)]">
+                        <p className="text-xs font-semibold text-[hsl(220,10%,70%)] uppercase tracking-wide">상세 설정</p>
+
+                        {/* Size fields */}
+                        {showSize && (
+                          <div>
+                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">사이즈 (mm)</label>
+                            <div className="flex items-center gap-1.5">
+                              {sizeFields.map((field, idx) => (
+                                <div key={field} className="flex items-center gap-1.5">
+                                  {idx > 0 && <span className="text-xs text-[hsl(220,10%,55%)]">×</span>}
+                                  <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    placeholder={sizeLabels[field]}
+                                    value={selected.size?.[field] || ''}
+                                    onChange={e => {
+                                      const val = e.target.value.replace(/[^0-9]/g, '');
+                                      update({
+                                        size: {
+                                          w: field === 'w' ? val : (selected.size?.w || ''),
+                                          h: field === 'h' ? val : (selected.size?.h || ''),
+                                          d: field === 'd' ? val : (selected.size?.d || ''),
+                                        }
+                                      });
+                                    }}
+                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,20%,10%)] text-white text-sm text-center placeholder:text-[hsl(220,10%,40%)]"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Quantity */}
+                        {component.needsQuantity && (
+                          <div className="flex items-center gap-3">
+                            <label className="text-xs text-[hsl(220,10%,65%)] whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              value={selected.quantity === 0 ? '' : selected.quantity}
+                              onChange={e => {
+                                const val = e.target.value.replace(/[^0-9]/g, '');
+                                update({ quantity: val === '' ? 0 : Math.min(9999, parseInt(val)) });
+                              }}
+                              onBlur={() => {
+                                if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
+                              }}
+                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,20%,10%)] text-white text-sm text-center"
+                            />
+                          </div>
+                        )}
+
+                        {/* Material */}
+                        {component.hasMaterial && component.materialOptions && (
+                          <div>
+                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">재질</label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {component.materialOptions.map(mat => (
+                                <button
+                                  key={mat.id}
+                                  onClick={() => update({ material: mat.id })}
+                                  className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                                    selected.material === mat.id
+                                      ? 'border-primary bg-primary/20 text-primary'
+                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                  }`}
+                                >
+                                  {mat.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Finishing */}
+                        {component.hasFinishing && component.finishingOptions && (
+                          <div>
+                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">후가공</label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {component.finishingOptions.map(fin => (
+                                <button
+                                  key={fin.id}
+                                  onClick={() => update({ finishing: fin.id })}
+                                  className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                                    selected.finishing === fin.id
+                                      ? 'border-primary bg-primary/20 text-primary'
+                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                  }`}
+                                >
+                                  {fin.label}
+                                </button>
+                              ))}
+                            </div>
+                            {selected.finishing && component.finishingOptions.find(f => f.id === selected.finishing)?.note && (
+                              <p className="text-xs text-amber-500 mt-1">
+                                {component.finishingOptions.find(f => f.id === selected.finishing)?.note}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Coating */}
+                        {component.hasCoating && (
+                          <div>
+                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">코팅</label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {[
+                                { id: 'none', label: '없음' },
+                                { id: 'matte', label: '무광' },
+                                { id: 'glossy', label: '유광' },
+                              ].map(c => (
+                                <button
+                                  key={c.id}
+                                  onClick={() => update({ coating: c.id })}
+                                  className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                                    (selected.coating || 'none') === c.id
+                                      ? 'border-primary bg-primary/20 text-primary'
+                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                  }`}
+                                >
+                                  {c.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Sticker attach */}
+                        {component.hasSticker && (
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selected.stickerAttach || false}
+                              onChange={e => update({ stickerAttach: e.target.checked })}
+                              className="rounded border-[hsl(220,15%,30%)]"
+                            />
+                            <span className="text-xs text-[hsl(220,10%,80%)]">스티커 부착</span>
+                          </label>
+                        )}
+
+                        {/* Magnet lock */}
+                        {showMagnet && (
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selected.magnetLock || false}
+                              onChange={e => update({ magnetLock: e.target.checked })}
+                              className="rounded border-[hsl(220,15%,30%)]"
+                            />
+                            <span className="text-xs text-[hsl(220,10%,80%)]">자석 여닫이 추가 (+₩3,000)</span>
+                          </label>
+                        )}
+
+                        {/* Deselect */}
+                        <button onClick={onDeselect} className="text-xs text-red-400 hover:text-red-300 hover:underline">선택 해제</button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -129,168 +291,6 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
               {component.notes?.map((note, i) => (
                 <p key={i} className="text-xs text-muted-foreground">{note}</p>
               ))}
-
-              {/* Additional options when selected */}
-              {selected && (
-                <div className="space-y-3 pt-3 mt-2 rounded-lg bg-muted/40 p-3 border border-border/50">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">상세 설정</p>
-
-                  {/* Size fields */}
-                  {showSize && (
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">사이즈 (mm)</label>
-                      <div className="flex items-center gap-1.5">
-                        {sizeFields.map((field, idx) => (
-                          <div key={field} className="flex items-center gap-1.5">
-                            {idx > 0 && <span className="text-xs text-muted-foreground">×</span>}
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              placeholder={sizeLabels[field]}
-                              value={selected.size?.[field] || ''}
-                              onChange={e => {
-                                const val = e.target.value.replace(/[^0-9]/g, '');
-                                update({
-                                  size: {
-                                    w: field === 'w' ? val : (selected.size?.w || ''),
-                                    h: field === 'h' ? val : (selected.size?.h || ''),
-                                    d: field === 'd' ? val : (selected.size?.d || ''),
-                                  }
-                                });
-                              }}
-                              className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Quantity */}
-                  {component.needsQuantity && (
-                    <div className="flex items-center gap-3">
-                      <label className="text-xs text-muted-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        value={selected.quantity === 0 ? '' : selected.quantity}
-                        onChange={e => {
-                          const val = e.target.value.replace(/[^0-9]/g, '');
-                          update({ quantity: val === '' ? 0 : Math.min(9999, parseInt(val)) });
-                        }}
-                        onBlur={() => {
-                          if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
-                        }}
-                        className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                      />
-                    </div>
-                  )}
-
-                  {/* Material */}
-                  {component.hasMaterial && component.materialOptions && (
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">재질</label>
-                      <div className="flex flex-wrap gap-1.5">
-                        {component.materialOptions.map(mat => (
-                          <button
-                            key={mat.id}
-                            onClick={() => update({ material: mat.id })}
-                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
-                              selected.material === mat.id
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-muted-foreground hover:border-primary/30'
-                            }`}
-                          >
-                            {mat.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Finishing */}
-                  {component.hasFinishing && component.finishingOptions && (
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">후가공</label>
-                      <div className="flex flex-wrap gap-1.5">
-                        {component.finishingOptions.map(fin => (
-                          <button
-                            key={fin.id}
-                            onClick={() => update({ finishing: fin.id })}
-                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
-                              selected.finishing === fin.id
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-muted-foreground hover:border-primary/30'
-                            }`}
-                          >
-                            {fin.label}
-                          </button>
-                        ))}
-                      </div>
-                      {selected.finishing && component.finishingOptions.find(f => f.id === selected.finishing)?.note && (
-                        <p className="text-xs text-amber-600 mt-1">
-                          {component.finishingOptions.find(f => f.id === selected.finishing)?.note}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Coating */}
-                  {component.hasCoating && (
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">코팅</label>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          { id: 'none', label: '없음' },
-                          { id: 'matte', label: '무광' },
-                          { id: 'glossy', label: '유광' },
-                        ].map(c => (
-                          <button
-                            key={c.id}
-                            onClick={() => update({ coating: c.id })}
-                            className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
-                              (selected.coating || 'none') === c.id
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-muted-foreground hover:border-primary/30'
-                            }`}
-                          >
-                            {c.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Sticker attach (for tokens) */}
-                  {component.hasSticker && (
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selected.stickerAttach || false}
-                        onChange={e => update({ stickerAttach: e.target.checked })}
-                        className="rounded border-border"
-                      />
-                      <span className="text-xs text-card-foreground">스티커 부착</span>
-                    </label>
-                  )}
-
-                  {/* Magnet lock */}
-                  {showMagnet && (
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={selected.magnetLock || false}
-                        onChange={e => update({ magnetLock: e.target.checked })}
-                        className="rounded border-border"
-                      />
-                      <span className="text-xs text-card-foreground">자석 여닫이 추가 (+₩3,000)</span>
-                    </label>
-                  )}
-
-                  {/* Deselect */}
-                  <button onClick={onDeselect} className="text-xs text-destructive hover:underline">선택 해제</button>
-                </div>
-              )}
 
               {/* Custom items */}
               {hasCustom && (
