@@ -74,20 +74,20 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
     <div className={`border rounded-lg overflow-hidden shadow-sm transition-shadow ${isSelected ? 'border-primary/40 bg-card shadow-md' : 'border-border bg-card hover:shadow-sm'}`}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-5 py-4 transition-colors text-left border-b border-border bg-card hover:bg-muted/30"
+        className="w-full flex items-center justify-between px-5 py-5 transition-colors text-left border-b border-border bg-card hover:bg-muted/30"
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">{component.icon}</span>
           <div>
-            <h3 className={`font-bold text-[15px] tracking-tight ${isSelected ? 'text-emerald-700' : 'text-foreground'}`}>
+            <h3 className={`font-bold text-base tracking-tight ${isSelected ? 'text-emerald-700' : 'text-foreground'}`}>
               {component.name}
             </h3>
-            <p className="text-xs mt-0.5 text-muted-foreground">{component.description}</p>
+            <p className="text-xs mt-1 text-muted-foreground">{component.description}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           {activeCount > 0 && (
-            <span className="text-xs bg-primary text-primary-foreground px-2.5 py-0.5 rounded-full font-bold">
+            <span className="text-xs bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full font-medium">
               {activeCount}개 선택
             </span>
           )}
@@ -104,7 +104,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 space-y-2">
+            <div className="px-4 pt-3 pb-4 space-y-2.5">
               {/* Options */}
               {component.options.map(opt => {
                 const isActive = selected?.optionId === opt.id;
