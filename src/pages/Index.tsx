@@ -11,6 +11,9 @@ const Index = () => {
   const [sets, setSets] = useState(10);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
+  const [enabledComponents, setEnabledComponents] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(BOARD_GAME_COMPONENTS.map(c => [c.id, true]))
+  );
   const [selections, setSelections] = useState<Record<string, Selection>>({});
   const [customItemsMap, setCustomItemsMap] = useState<Record<string, CustomItem[]>>({});
 
@@ -147,10 +150,37 @@ const Index = () => {
           </div>
         </div>
 
+        {/* 구성품 체크리스트 */}
+        <div className="mb-5 p-4 rounded-lg border border-border bg-card">
+          <label className="text-xs font-medium text-muted-foreground mb-2 block">구성품 체크리스트</label>
+          <div className="flex flex-wrap gap-2">
+            {BOARD_GAME_COMPONENTS.map(comp => {
+              const checked = enabledComponents[comp.id] ?? true;
+              return (
+                <button
+                  key={comp.id}
+                  onClick={() => {
+                    setEnabledComponents(prev => ({ ...prev, [comp.id]: !prev[comp.id] }));
+                    if (checked) handleDeselect(comp.id);
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all border ${
+                    checked
+                      ? 'bg-[#2b2b2b] text-[#c1ff99] border-[#2b2b2b]'
+                      : 'bg-muted text-muted-foreground border-border opacity-60'
+                  }`}
+                >
+                  <span>{comp.icon}</span>
+                  <span>{comp.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-5 gap-5">
           <div className="lg:col-span-3 space-y-4">
             <h2 className="font-bold text-foreground text-sm mb-2">구성품 선택</h2>
-            {BOARD_GAME_COMPONENTS.map((comp) => (
+            {BOARD_GAME_COMPONENTS.filter(comp => enabledComponents[comp.id] ?? true).map((comp) => (
               <ComponentCard
                 key={comp.id}
                 component={comp}
