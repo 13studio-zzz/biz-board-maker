@@ -75,7 +75,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b border-border bg-card sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
           <div>
             <h1 className="text-base font-bold text-foreground">🎲 보드게임 주문제작 견적 시스템</h1>
             <p className="text-xs text-muted-foreground">구성품과 수량을 선택하면 실시간 견적이 산출됩니다</p>
@@ -83,7 +83,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-5 flex-1">
+      <main className="max-w-7xl mx-auto px-6 py-5 flex-1 w-full">
         {/* 프로젝트 정보 + 수량 */}
         <div className="mb-5 p-4 rounded-lg border border-border bg-card space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -184,7 +184,7 @@ const Index = () => {
       </main>
 
       <footer className="border-t border-border bg-card mt-12">
-        <div className="max-w-6xl mx-auto px-4 py-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 py-6 text-center">
           <p className="text-xs text-muted-foreground">© 2025 보드게임 주문제작 견적 시스템 · 모든 가격은 VAT 별도입니다</p>
         </div>
       </footer>
