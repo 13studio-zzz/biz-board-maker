@@ -147,7 +147,7 @@ const Index = () => {
         </div>
 
         <div className="grid lg:grid-cols-5 gap-5">
-          <div className="lg:col-span-3 space-y-2">
+          <div className="lg:col-span-3 space-y-4">
             <h2 className="font-bold text-foreground text-sm mb-2">구성품 선택</h2>
             {BOARD_GAME_COMPONENTS.map((comp) => (
               <ComponentCard

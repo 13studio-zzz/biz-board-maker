@@ -66,10 +66,10 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
   const sizeLabels: Record<string, string> = { w: '가로', h: '세로', d: '높이' };
 
   return (
-    <div className="border border-border rounded-lg bg-card overflow-hidden">
+    <div className={`border rounded-lg overflow-hidden shadow-sm transition-shadow ${isSelected ? 'border-primary/40 bg-card shadow-md' : 'border-border bg-card hover:shadow-sm'}`}>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors text-left"
+        className={`w-full flex items-center justify-between p-4 transition-colors text-left ${isSelected ? 'bg-primary/5' : 'hover:bg-muted/50'}`}
       >
         <div className="flex items-center gap-3">
           <span className="text-xl">{component.icon}</span>
