@@ -83,7 +83,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-5 flex-1">
+      <main className="max-w-7xl mx-auto px-6 py-5 flex-1 w-full">
         {/* 프로젝트 정보 + 수량 */}
         <div className="mb-5 p-4 rounded-lg border border-border bg-card space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
