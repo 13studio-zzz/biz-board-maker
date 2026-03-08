@@ -231,6 +231,7 @@ export function calculateQuote(
     lineItems.push({
       name: comp.name,
       option: opt.label,
+      quantity: qty,
       materialCost: Math.round(totalMaterialForSets),
       laborCost: Math.round(totalLaborForSets),
       setupCost: Math.round(setupForAll),
