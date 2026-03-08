@@ -352,7 +352,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                   ))}
                   <button
                     onClick={addCustomItem}
-                    className="flex items-center gap-1 text-xs font-medium bg-[#2b2b2b] text-[#c1ff99] px-3 py-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
+                    className="flex items-center gap-1 text-xs font-medium bg-muted text-foreground px-3 py-2 rounded-md hover:bg-muted/80 transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> 항목 추가
                   </button>
