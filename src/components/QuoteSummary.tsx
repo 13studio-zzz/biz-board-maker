@@ -311,9 +311,9 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
       <div className="px-5 pb-4 space-y-2 no-print">
         {hasItems && (
           <div className="flex gap-2">
-            <button
+              <button
               onClick={exportAsImage}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors border border-primary/40"
             >
               <FileImage className="w-4 h-4" /> 이미지 저장
             </button>

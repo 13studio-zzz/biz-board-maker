@@ -128,10 +128,10 @@ const Index = () => {
                 <button
                   key={q}
                   onClick={() => setSets(q)}
-                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all border ${
                     sets === q
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-secondary text-secondary-foreground hover:bg-accent'
+                      ? 'bg-primary text-primary-foreground border-primary/60 font-bold'
+                      : 'bg-secondary text-secondary-foreground hover:bg-accent border-border'
                   }`}
                 >
                   {q}

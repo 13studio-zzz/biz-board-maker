@@ -80,7 +80,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
         </div>
         <div className="flex items-center gap-2">
           {activeCount > 0 && (
-            <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-[#2b2b2b] text-[#c1ff99] px-2 py-0.5 rounded-full font-bold">
               {activeCount}개 선택
             </span>
           )}
