@@ -347,6 +347,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'card-tarot', label: '타로 사이즈 (70×120mm)', description: '350g 아트지, 양면 컬러', basePrice: 180, setupCost: 35000, laborMinutes: 0.4 },
       { id: 'card-custom', label: '비규격 카드', description: '사이즈 직접 입력', basePrice: 150, setupCost: 40000, laborMinutes: 0.4 },
     ],
+    sizeFields: ['w', 'h'],
   },
   {
     id: 'dice',

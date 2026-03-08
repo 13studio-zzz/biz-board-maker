@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import ComponentCard from '@/components/ComponentCard';
 import QuoteSummary from '@/components/QuoteSummary';
+import type { ImportedQuoteData } from '@/components/QuoteSummary';
 import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem, type Selection } from '@/lib/pricing';
 
 const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
@@ -11,6 +12,12 @@ const Index = () => {
   const [clientName, setClientName] = useState('');
   const [selections, setSelections] = useState<Record<string, Selection>>({});
   const [customItemsMap, setCustomItemsMap] = useState<Record<string, CustomItem[]>>({});
+
+  // Expose state for JSON export
+  useEffect(() => {
+    (window as any).__quoteSelections = selections;
+    (window as any).__quoteCustomItems = customItemsMap;
+  }, [selections, customItemsMap]);
 
   const handleSelect = (compId: string, sel: Partial<Selection>) => {
     setSelections(prev => ({
@@ -29,6 +36,14 @@ const Index = () => {
 
   const handleCustomItems = (compId: string, items: CustomItem[]) => {
     setCustomItemsMap(prev => ({ ...prev, [compId]: items }));
+  };
+
+  const handleImportQuote = (data: ImportedQuoteData) => {
+    setProjectName(data.projectName);
+    setClientName(data.clientName);
+    setSets(data.sets);
+    setSelections(data.selections as Record<string, Selection>);
+    setCustomItemsMap(data.customItemsMap as Record<string, CustomItem[]>);
   };
 
   const quoteItems: QuoteItem[] = useMemo(() =>
@@ -148,7 +163,13 @@ const Index = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <QuoteSummary quote={quote} sets={sets} projectName={projectName} clientName={clientName} />
+            <QuoteSummary
+              quote={quote}
+              sets={sets}
+              projectName={projectName}
+              clientName={clientName}
+              onImportQuote={handleImportQuote}
+            />
           </div>
         </div>
       </main>

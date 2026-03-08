@@ -62,7 +62,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
   // Show size input for 비규격 카드 or needsSize components
   const showSize = component.needsSize || (selected?.optionId === 'card-custom');
 
-  const sizeFields = component.sizeFields || ['w', 'h', 'd'];
+  const sizeFields = component.sizeFields || ['w', 'h'];
   const sizeLabels: Record<string, string> = { w: '가로', h: '세로', d: '높이' };
 
   return (
