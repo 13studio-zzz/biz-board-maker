@@ -273,15 +273,25 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
               </div>
             </div>
 
-            <div className="border-t border-border mt-3 pt-3">
+            <div className="border-t border-border mt-3 pt-3 space-y-2">
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-xs text-muted-foreground">총 견적가 ({sets}세트)</p>
+                  <p className="text-xs text-muted-foreground">총 견적가 ({sets}세트, VAT 별도)</p>
                   <p className="text-xl font-bold text-primary">{formatW(quote.total)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-muted-foreground">세트당 단가</p>
                   <p className="text-base font-bold text-card-foreground">{formatW(quote.unitPrice)}</p>
+                </div>
+              </div>
+              <div className="flex justify-between items-end pt-1 border-t border-dashed border-border">
+                <div>
+                  <p className="text-xs text-muted-foreground">VAT 포함가</p>
+                  <p className="text-lg font-bold text-card-foreground">{formatW(Math.round(quote.total * 1.1))}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">세트당 (VAT 포함)</p>
+                  <p className="text-sm font-bold text-card-foreground">{formatW(Math.round(quote.unitPrice * 1.1))}</p>
                 </div>
               </div>
             </div>
