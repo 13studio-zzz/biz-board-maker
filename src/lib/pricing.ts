@@ -107,10 +107,10 @@ function getVolumeDiscount(sets: number): number {
   if (sets <= 10) return 0.90;
   if (sets <= 30) return 0.78;
   if (sets <= 50) return 0.68;
-  if (sets <= 100) return 0.58;
-  if (sets <= 300) return 0.48;
-  if (sets <= 500) return 0.40;
-  return 0.32;
+  if (sets <= 100) return 0.55;
+  if (sets <= 300) return 0.38;
+  if (sets <= 500) return 0.25;
+  return 0.18;
 }
 
 // 소량 핸드메이드 할증
@@ -120,7 +120,9 @@ function getHandmadeSurcharge(sets: number): number {
   if (sets <= 30) return 1.4;
   if (sets <= 50) return 1.15;
   if (sets <= 100) return 1.0;
-  return 0.85;
+  if (sets <= 300) return 0.6;
+  if (sets <= 500) return 0.35;
+  return 0.2;
 }
 
 const LABOR_RATE_PER_HOUR = 25000;
@@ -129,7 +131,8 @@ function getMarginRate(sets: number): number {
   if (sets <= 10) return 0.40;
   if (sets <= 50) return 0.35;
   if (sets <= 100) return 0.30;
-  if (sets <= 500) return 0.22;
+  if (sets <= 300) return 0.25;
+  if (sets <= 500) return 0.20;
   return 0.15;
 }
 
