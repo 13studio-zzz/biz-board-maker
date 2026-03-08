@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { FileImage } from 'lucide-react';
+import { FileImage, Download, Upload } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import type { QuoteResult } from '@/lib/pricing';
 
@@ -9,9 +9,23 @@ interface Props {
   sets: number;
   projectName: string;
   clientName: string;
+  onImportQuote?: (data: ImportedQuoteData) => void;
 }
 
-const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
+export interface ImportedQuoteData {
+  projectName: string;
+  clientName: string;
+  sets: number;
+  selections: Record<string, any>;
+  customItemsMap: Record<string, any[]>;
+}
+
+interface ExportData extends ImportedQuoteData {
+  exportDate: string;
+  version: number;
+}
+
+const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: Props) => {
   const formatW = (n: number) => `₩${n.toLocaleString()}`;
   const summaryRef = useRef<HTMLDivElement>(null);
 
@@ -25,6 +39,53 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
     link.download = `견적서_${projectName || '보드게임'}_${sets}세트.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
+  };
+
+  const exportAsJson = () => {
+    const data: ExportData = {
+      projectName,
+      clientName,
+      sets,
+      selections: (window as any).__quoteSelections || {},
+      customItemsMap: (window as any).__quoteCustomItems || {},
+      exportDate: new Date().toISOString(),
+      version: 1,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.download = `견적_${projectName || '보드게임'}_${sets}세트.json`;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+  };
+
+  const importFromJson = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const data = JSON.parse(ev.target?.result as string) as ExportData;
+          if (data.version && onImportQuote) {
+            onImportQuote({
+              projectName: data.projectName || '',
+              clientName: data.clientName || '',
+              sets: data.sets || 10,
+              selections: data.selections || {},
+              customItemsMap: data.customItemsMap || {},
+            });
+          }
+        } catch {
+          alert('유효하지 않은 견적 파일입니다.');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
   };
 
   const hasItems = quote.items.length > 0 || quote.customItems.length > 0;
@@ -141,16 +202,30 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
         )}
       </div>
 
-      {hasItems && (
-        <div className="px-5 pb-4 flex gap-2 no-print">
-          <button
-            onClick={exportAsImage}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            <FileImage className="w-4 h-4" /> 이미지 저장
-          </button>
-        </div>
-      )}
+      <div className="px-5 pb-4 space-y-2 no-print">
+        {hasItems && (
+          <div className="flex gap-2">
+            <button
+              onClick={exportAsImage}
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              <FileImage className="w-4 h-4" /> 이미지 저장
+            </button>
+            <button
+              onClick={exportAsJson}
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-border text-card-foreground text-sm font-medium hover:bg-muted transition-colors"
+            >
+              <Download className="w-4 h-4" /> 견적 내보내기
+            </button>
+          </div>
+        )}
+        <button
+          onClick={importFromJson}
+          className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-muted-foreground text-sm hover:bg-muted transition-colors"
+        >
+          <Upload className="w-4 h-4" /> 견적 불러오기
+        </button>
+      </div>
     </motion.div>
   );
 };

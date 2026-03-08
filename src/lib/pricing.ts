@@ -317,7 +317,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     hasCoating: true,
     hasMaterial: true,
     materialOptions: [
-      { id: 'mat-300g', label: '300g (스노우/아트지)', priceMultiplier: 0.5 },
+      { id: 'mat-300g', label: '300g (스노우/아트지)', priceMultiplier: 0.12 },
       { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 1.8 },
     ],
     sortOrder: 2,
@@ -326,7 +326,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'board-fold4', label: '4단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 7000, setupCost: 60000, laborMinutes: 40 },
       { id: 'board-flat', label: '평판형 (1장)', description: '하드보드 + 인쇄', basePrice: 5500, setupCost: 35000, laborMinutes: 15 },
     ],
-    notes: ['💡 300g(스노우/아트지)는 카드 재질과 동일한 가성비 옵션입니다.'],
+    notes: ['💡 300g(스노우/아트지)는 인쇄+코팅+라운딩만 하는 저가 개인보드판 방식입니다.'],
   },
   {
     id: 'cards',
@@ -347,6 +347,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'card-tarot', label: '타로 사이즈 (70×120mm)', description: '350g 아트지, 양면 컬러', basePrice: 180, setupCost: 35000, laborMinutes: 0.4 },
       { id: 'card-custom', label: '비규격 카드', description: '사이즈 직접 입력', basePrice: 150, setupCost: 40000, laborMinutes: 0.4 },
     ],
+    sizeFields: ['w', 'h'],
   },
   {
     id: 'dice',
