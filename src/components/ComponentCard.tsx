@@ -157,7 +157,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                         }
                                       });
                                     }}
-                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-white text-foreground text-sm text-center placeholder:text-muted-foreground"
+                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center placeholder:text-muted-foreground"
                                   />
                                 </div>
                               ))}
