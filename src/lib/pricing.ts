@@ -262,7 +262,7 @@ export function calculateQuote(
     // Ssabari size surcharge
     const ssabariSurcharge = item.optionId === 'pkg-ssabari' ? getSsabariSizeSurcharge(item.size) : 0;
 
-    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd + ssabariSurcharge);
+    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd + ssabariSurcharge + stickerAdd);
     const materialPerSet = baseUnitPrice * qty * volumeDiscount;
     const laborPerSet = (opt.laborMinutes * qty / 60) * LABOR_RATE_PER_HOUR * handmadeSurcharge;
     const setupForAll = opt.setupCost;
