@@ -307,7 +307,7 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
               <FileImage className="w-4 h-4" /> 이미지 저장
             </button>
             <button
-              onClick={exportAsJson}
+              onClick={exportAsCsv}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-border text-card-foreground text-sm font-medium hover:bg-muted transition-colors"
             >
               <Download className="w-4 h-4" /> 견적 내보내기
