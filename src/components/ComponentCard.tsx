@@ -276,7 +276,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onChange={e => update({ stickerAttach: e.target.checked })}
                               className="rounded border-input"
                             />
-                            <span className="text-xs text-white">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
+                            <span className="text-xs text-foreground">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
                           </label>
                           </label>
                         )}
