@@ -41,8 +41,62 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
     link.click();
   };
 
-  const exportAsJson = () => {
-    const data: ExportData = {
+  const exportAsCsv = () => {
+    const BOM = '\uFEFF';
+    const rows: string[][] = [];
+    
+    // Header info
+    rows.push(['보드게임 견적서']);
+    rows.push(['프로젝트명', projectName || '']);
+    rows.push(['고객명', clientName || '']);
+    rows.push(['제작 수량', String(sets), '세트']);
+    rows.push(['작성일', new Date().toLocaleDateString('ko-KR')]);
+    rows.push([]);
+    
+    // Item header
+    rows.push(['구성품', '옵션', '사이즈', '코팅', '재질', '후가공', '자석여닫이', '스티커부착', '소계(₩)']);
+    
+    // Items
+    quote.items.forEach(item => {
+      rows.push([
+        item.name,
+        item.option || '',
+        item.size || '',
+        item.coating || '',
+        item.material || '',
+        item.finishing || '',
+        item.magnetLock ? 'O' : '',
+        item.stickerAttach ? 'O' : '',
+        String(item.subtotal),
+      ]);
+    });
+    
+    // Custom items
+    quote.customItems.forEach(ci => {
+      rows.push([
+        ci.name || '(미입력)',
+        '직접입력',
+        '', '', '', '', '', '',
+        String(ci.subtotal),
+      ]);
+    });
+    
+    rows.push([]);
+    rows.push(['재료비', '', '', '', '', '', '', '', String(quote.breakdown.materialCost)]);
+    rows.push(['공임비', '', '', '', '', '', '', '', String(quote.breakdown.laborCost)]);
+    rows.push(['셋업비', '', '', '', '', '', '', '', String(quote.breakdown.setupCost)]);
+    if (quote.customTotal > 0) {
+      rows.push(['직접입력 합계', '', '', '', '', '', '', '', String(quote.customTotal)]);
+    }
+    rows.push([`마진 (${Math.round(quote.margin * 100)}%)`, '', '', '', '', '', '', '', String(quote.breakdown.marginAmount)]);
+    rows.push([]);
+    rows.push(['총 견적가', '', '', '', '', '', '', '', String(quote.total)]);
+    rows.push(['세트당 단가', '', '', '', '', '', '', '', String(quote.unitPrice)]);
+    
+    // Add raw data for re-import
+    rows.push([]);
+    rows.push(['---IMPORT_DATA---']);
+    const importData: ExportData = {
       projectName,
       clientName,
       sets,
@@ -51,33 +105,74 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
       exportDate: new Date().toISOString(),
       version: 1,
     };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    rows.push([JSON.stringify(importData)]);
+    
+    const csvContent = BOM + rows.map(row => 
+      row.map(cell => {
+        const str = String(cell);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      }).join(',')
+    ).join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    link.download = `견적_${projectName || '보드게임'}_${sets}세트.json`;
+    link.download = `견적_${projectName || '보드게임'}_${sets}세트.csv`;
     link.href = URL.createObjectURL(blob);
     link.click();
     URL.revokeObjectURL(link.href);
   };
 
-  const importFromJson = () => {
+  const importFromCsv = () => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json';
+    input.accept = '.csv,.json';
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = (ev) => {
         try {
-          const data = JSON.parse(ev.target?.result as string) as ExportData;
-          if (data.version && onImportQuote) {
-            onImportQuote({
-              projectName: data.projectName || '',
-              clientName: data.clientName || '',
-              sets: data.sets || 10,
-              selections: data.selections || {},
-              customItemsMap: data.customItemsMap || {},
-            });
+          const text = ev.target?.result as string;
+          
+          // Try JSON first (backward compat)
+          if (file.name.endsWith('.json')) {
+            const data = JSON.parse(text) as ExportData;
+            if (data.version && onImportQuote) {
+              onImportQuote({
+                projectName: data.projectName || '',
+                clientName: data.clientName || '',
+                sets: data.sets || 10,
+                selections: data.selections || {},
+                customItemsMap: data.customItemsMap || {},
+              });
+            }
+            return;
+          }
+          
+          // CSV: find ---IMPORT_DATA--- marker
+          const lines = text.split('\n');
+          const markerIdx = lines.findIndex(l => l.trim().includes('---IMPORT_DATA---'));
+          if (markerIdx >= 0 && markerIdx + 1 < lines.length) {
+            let jsonLine = lines[markerIdx + 1].trim();
+            // Remove CSV quoting if present
+            if (jsonLine.startsWith('"') && jsonLine.endsWith('"')) {
+              jsonLine = jsonLine.slice(1, -1).replace(/""/g, '"');
+            }
+            const data = JSON.parse(jsonLine) as ExportData;
+            if (data.version && onImportQuote) {
+              onImportQuote({
+                projectName: data.projectName || '',
+                clientName: data.clientName || '',
+                sets: data.sets || 10,
+                selections: data.selections || {},
+                customItemsMap: data.customItemsMap || {},
+              });
+            }
+          } else {
+            alert('견적 데이터를 찾을 수 없습니다. CSV 파일에 IMPORT_DATA 마커가 필요합니다.');
           }
         } catch {
           alert('유효하지 않은 견적 파일입니다.');
@@ -212,15 +307,15 @@ const QuoteSummary = ({ quote, sets, projectName, clientName, onImportQuote }: P
               <FileImage className="w-4 h-4" /> 이미지 저장
             </button>
             <button
-              onClick={exportAsJson}
+              onClick={exportAsCsv}
               className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-border text-card-foreground text-sm font-medium hover:bg-muted transition-colors"
             >
-              <Download className="w-4 h-4" /> 견적 내보내기
+              <Download className="w-4 h-4" /> CSV 내보내기
             </button>
           </div>
         )}
         <button
-          onClick={importFromJson}
+          onClick={importFromCsv}
           className="w-full flex items-center justify-center gap-1.5 px-3 py-2 rounded-md border border-dashed border-border text-muted-foreground text-sm hover:bg-muted transition-colors"
         >
           <Upload className="w-4 h-4" /> 견적 불러오기
