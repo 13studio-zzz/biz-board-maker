@@ -33,6 +33,7 @@ export interface SubOption {
   setupCost: number;
   laborMinutes: number;
   note?: string;
+  allowedFinishings?: string[];
 }
 
 export interface CustomItem {
@@ -257,11 +258,11 @@ export function calculateQuote(
 
     const coatingAdd = comp.hasCoating ? (COATING_PRICE[item.coating || 'none'] || 0) : 0;
     const magnetAdd = item.magnetLock && comp.magnetPriceAdd ? comp.magnetPriceAdd : 0;
-
+    const stickerAdd = item.stickerAttach ? 150 : 0; // 라벨 제작 + 수작업 부착 비용
     // Ssabari size surcharge
     const ssabariSurcharge = item.optionId === 'pkg-ssabari' ? getSsabariSizeSurcharge(item.size) : 0;
 
-    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd + ssabariSurcharge);
+    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd + ssabariSurcharge + stickerAdd);
     const materialPerSet = baseUnitPrice * qty * volumeDiscount;
     const laborPerSet = (opt.laborMinutes * qty / 60) * LABOR_RATE_PER_HOUR * handmadeSurcharge;
     const setupForAll = opt.setupCost;
@@ -372,7 +373,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     hasMaterial: true,
     materialOptions: [
       { id: 'mat-300g', label: '300g (스노우/아트지)', priceMultiplier: 0.08 },
-      { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 1.8 },
+      { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 2.5 },
     ],
     sortOrder: 2,
     options: [
@@ -414,7 +415,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     defaultQuantity: 2,
     sortOrder: 4,
     options: [
-      { id: 'dice-standard', label: '표준 D6 (16mm)', description: '아크릴 기성품, 숫자 각인', basePrice: 500, setupCost: 0, laborMinutes: 2 },
+      { id: 'dice-standard', label: '표준 D6 (16mm)', description: '아크릴 기성품, 숫자 각인', basePrice: 350, setupCost: 0, laborMinutes: 1 },
       { id: 'dice-custom', label: '커스텀 각인 D6', description: '16mm, 면별 커스텀 심볼 레이저 각인', basePrice: 1500, setupCost: 30000, laborMinutes: 5 },
       { id: 'dice-wood', label: '원목 주사위', description: '20mm 자작나무, CNC 가공 + 도장', basePrice: 3000, setupCost: 20000, laborMinutes: 15 },
       { id: 'dice-poly', label: '다면체 세트 (D4~D20)', description: '7종 세트, 아크릴 기성품', basePrice: 3500, setupCost: 0, laborMinutes: 3 },
@@ -494,13 +495,13 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'fin-fold', label: '접지', priceAdd: 30 },
       { id: 'fin-leaflet', label: '리플렛', priceAdd: 80 },
       { id: 'fin-staple', label: '중철', priceAdd: 200, note: '⚠️ 중철 제본은 페이지 수가 4의 배수여야 합니다.' },
-      { id: 'fin-perfect', label: '무선제본', priceAdd: 500 },
+      { id: 'fin-perfect', label: '무선제본', priceAdd: 500, note: '⚠️ 1,000세트 이상 시 추천합니다.' },
     ],
     sortOrder: 8,
     options: [
-      { id: 'manual-basic', label: '기본 매뉴얼', description: '양면 컬러 인쇄', basePrice: 150, setupCost: 5000, laborMinutes: 1.5 },
-      { id: 'manual-booklet', label: '소책자 (8~16p)', description: '양면 컬러 인쇄', basePrice: 500, setupCost: 10000, laborMinutes: 3 },
-      { id: 'manual-premium', label: '프리미엄 북 (24p+)', description: '고급지, 양면 컬러 인쇄', basePrice: 1200, setupCost: 20000, laborMinutes: 6 },
+      { id: 'manual-basic', label: '기본 매뉴얼', description: '양면 컬러 인쇄', basePrice: 150, setupCost: 5000, laborMinutes: 1.5, allowedFinishings: ['fin-single', 'fin-fold', 'fin-leaflet'] },
+      { id: 'manual-booklet', label: '소책자 (4~16p)', description: '양면 컬러 인쇄', basePrice: 500, setupCost: 10000, laborMinutes: 3, allowedFinishings: ['fin-staple'] },
+      { id: 'manual-premium', label: '프리미엄 북 (24p+)', description: '고급지, 양면 컬러 인쇄', basePrice: 1200, setupCost: 20000, laborMinutes: 6, allowedFinishings: ['fin-staple', 'fin-perfect'] },
     ],
   },
   {

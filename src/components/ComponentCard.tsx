@@ -22,13 +22,18 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
       onDeselect();
     } else {
       const defaultQty = component.defaultQuantity || 1;
+      // Reset finishing to first allowed option if current is not allowed
+      let finishing = selected?.finishing || component.finishingOptions?.[0]?.id;
+      if (opt.allowedFinishings && finishing && !opt.allowedFinishings.includes(finishing)) {
+        finishing = opt.allowedFinishings[0];
+      }
       onSelect({
         optionId: opt.id,
         quantity: component.needsQuantity ? defaultQty : 1,
         size: selected?.size,
         coating: selected?.coating || 'none',
         material: selected?.material || component.materialOptions?.[0]?.id,
-        finishing: selected?.finishing || component.finishingOptions?.[0]?.id,
+        finishing,
         magnetLock: selected?.magnetLock,
         stickerAttach: selected?.stickerAttach,
       });
@@ -201,31 +206,37 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         )}
 
                         {/* Finishing */}
-                        {component.hasFinishing && component.finishingOptions && (
-                          <div>
-                            <label className="text-xs text-white mb-1 block">후가공</label>
-                            <div className="flex flex-wrap gap-1.5">
-                              {component.finishingOptions.map(fin => (
-                                <button
-                                  key={fin.id}
-                                  onClick={() => update({ finishing: fin.id })}
-                                  className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
-                                    selected.finishing === fin.id
-                                      ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
-                                      : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
-                                  }`}
-                                >
-                                  {fin.label}
-                                </button>
-                              ))}
+                        {component.hasFinishing && component.finishingOptions && (() => {
+                          const activeOpt = component.options.find(o => o.id === selected.optionId);
+                          const filtered = activeOpt?.allowedFinishings
+                            ? component.finishingOptions!.filter(f => activeOpt.allowedFinishings!.includes(f.id))
+                            : component.finishingOptions!;
+                          return filtered.length > 0 ? (
+                            <div>
+                              <label className="text-xs text-white mb-1 block">후가공</label>
+                              <div className="flex flex-wrap gap-1.5">
+                                {filtered.map(fin => (
+                                  <button
+                                    key={fin.id}
+                                    onClick={() => update({ finishing: fin.id })}
+                                    className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
+                                      selected.finishing === fin.id
+                                        ? 'border-[#c1ff99] bg-[#c1ff99]/20 text-[#c1ff99] font-bold'
+                                        : 'border-[hsl(220,15%,30%)] bg-white text-foreground hover:border-primary/40'
+                                    }`}
+                                  >
+                                    {fin.label}
+                                  </button>
+                                ))}
+                              </div>
+                              {selected.finishing && filtered.find(f => f.id === selected.finishing)?.note && (
+                                <p className="text-xs text-amber-500 mt-1">
+                                  {filtered.find(f => f.id === selected.finishing)?.note}
+                                </p>
+                              )}
                             </div>
-                            {selected.finishing && component.finishingOptions.find(f => f.id === selected.finishing)?.note && (
-                              <p className="text-xs text-amber-500 mt-1">
-                                {component.finishingOptions.find(f => f.id === selected.finishing)?.note}
-                              </p>
-                            )}
-                          </div>
-                        )}
+                          ) : null;
+                        })()}
 
                         {/* Coating */}
                         {component.hasCoating && (
@@ -256,13 +267,15 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Sticker attach */}
                         {component.hasSticker && (
                           <label className="flex items-center gap-2 cursor-pointer">
+                          <label className="flex items-center gap-2 cursor-pointer">
                             <input
                               type="checkbox"
                               checked={selected.stickerAttach || false}
                               onChange={e => update({ stickerAttach: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-white">스티커 부착</span>
+                            <span className="text-xs text-white">스티커 부착 (개당 +₩150, 라벨 제작·수작업 포함)</span>
+                          </label>
                           </label>
                         )}
 
@@ -337,7 +350,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                   ))}
                   <button
                     onClick={addCustomItem}
-                    className="flex items-center gap-1 text-xs text-primary hover:underline font-medium"
+                    className="flex items-center gap-1 text-xs font-medium bg-[#2b2b2b] text-[#c1ff99] px-3 py-2 rounded-md hover:bg-[#3a3a3a] transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> 항목 추가
                   </button>
