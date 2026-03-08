@@ -86,6 +86,7 @@ export interface QuoteResult {
 export interface QuoteLineItem {
   name: string;
   option: string;
+  quantity: number;
   materialCost: number;
   laborCost: number;
   setupCost: number;
