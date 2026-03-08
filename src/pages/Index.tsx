@@ -213,9 +213,10 @@ const Index = () => {
         </div>
       </main>
 
-      <footer className="border-t border-border bg-card mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-6 text-center">
-          <p className="text-xs text-muted-foreground">© 2025 보드게임 주문제작 견적 시스템 · 모든 가격은 VAT 별도입니다</p>
+      <footer className="border-t border-border bg-card mt-20">
+        <div className="max-w-7xl mx-auto px-6 py-10 text-center space-y-1">
+          <p className="text-xs text-muted-foreground">본 견적은 참고용이며, 최종 가격은 상담 후 확정됩니다.</p>
+          <p className="text-xs text-muted-foreground">문의: contact@boardgame.kr · 모든 가격은 VAT 별도</p>
         </div>
       </footer>
     </div>
