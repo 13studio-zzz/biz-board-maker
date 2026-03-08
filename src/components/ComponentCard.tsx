@@ -262,7 +262,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onChange={e => update({ stickerAttach: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-[hsl(220,10%,80%)]">스티커 부착</span>
+                            <span className="text-xs text-white">스티커 부착</span>
                           </label>
                         )}
 
