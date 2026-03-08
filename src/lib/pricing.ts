@@ -1,4 +1,5 @@
 // 보드게임 주문제작 견적 산출 시스템
+import { type PricingTier, getTierForSets, DEFAULT_TIERS } from './pricingConfig';
 
 export interface ComponentOption {
   id: string;
