@@ -1,77 +1,134 @@
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { Download, FileImage } from 'lucide-react';
+import html2canvas from 'html2canvas';
 import type { QuoteResult } from '@/lib/pricing';
 
 interface Props {
   quote: QuoteResult;
   sets: number;
+  projectName: string;
+  clientName: string;
 }
 
-const QuoteSummary = ({ quote, sets }: Props) => {
+const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
   const formatW = (n: number) => `₩${n.toLocaleString()}`;
+  const summaryRef = useRef<HTMLDivElement>(null);
+
+  const exportAsImage = async () => {
+    if (!summaryRef.current) return;
+    const canvas = await html2canvas(summaryRef.current, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+    });
+    const link = document.createElement('a');
+    link.download = `견적서_${projectName || '보드게임'}_${sets}세트.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  const hasItems = quote.items.length > 0 || quote.customItems.length > 0;
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="rounded-xl border border-border bg-card p-6 shadow-elevated sticky top-6"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="rounded-lg border border-border bg-card sticky top-20"
     >
-      <h2 className="text-lg font-bold text-card-foreground mb-1">견적 요약</h2>
-      <p className="text-xs text-muted-foreground mb-4">
-        {sets <= 10 ? '🔧 소량 핸드메이드 제작' : sets <= 100 ? '⚙️ 반자동 제작 공정' : '🏭 소규모 양산 공정'}
-        {' · '}{sets}세트
-      </p>
+      <div ref={summaryRef} className="p-5">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-base font-bold text-card-foreground">견적서</h2>
+          <span className="text-xs text-muted-foreground">{new Date().toLocaleDateString('ko-KR')}</span>
+        </div>
+        {(projectName || clientName) && (
+          <div className="text-xs text-muted-foreground mb-3 space-y-0.5">
+            {projectName && <p>프로젝트: {projectName}</p>}
+            {clientName && <p>고객: {clientName}</p>}
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground mb-4">
+          {sets <= 10 ? '🔧 소량 핸드메이드' : sets <= 100 ? '⚙️ 반자동 공정' : '🏭 소규모 양산'}
+          {' · '}{sets}세트
+        </p>
 
-      {quote.items.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-8 text-center">구성품을 선택해주세요</p>
-      ) : (
-        <>
-          <div className="space-y-2 mb-4">
-            {quote.items.map((item, i) => (
-              <div key={i} className="flex justify-between text-sm">
-                <span className="text-card-foreground">{item.name} <span className="text-muted-foreground text-xs">({item.option})</span></span>
-                <span className="font-medium text-card-foreground">{formatW(item.subtotal)}</span>
+        {!hasItems ? (
+          <p className="text-sm text-muted-foreground py-8 text-center">구성품을 선택해주세요</p>
+        ) : (
+          <>
+            <div className="space-y-1.5 mb-4">
+              {quote.items.map((item, i) => (
+                <div key={i} className="flex justify-between text-sm">
+                  <span className="text-card-foreground truncate mr-2">
+                    {item.name} <span className="text-muted-foreground text-xs">({item.option})</span>
+                  </span>
+                  <span className="font-medium text-card-foreground whitespace-nowrap">{formatW(item.subtotal)}</span>
+                </div>
+              ))}
+              {quote.customItems.map((ci, i) => (
+                <div key={`c-${i}`} className="flex justify-between text-sm">
+                  <span className="text-card-foreground truncate mr-2">
+                    {ci.name || '(미입력)'} <span className="text-muted-foreground text-xs">(직접입력)</span>
+                  </span>
+                  <span className="font-medium text-card-foreground whitespace-nowrap">{formatW(ci.subtotal)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t border-border pt-3 space-y-1 text-sm">
+              <div className="flex justify-between text-muted-foreground">
+                <span>재료비</span><span>{formatW(quote.breakdown.materialCost)}</span>
               </div>
-            ))}
-          </div>
-
-          <div className="border-t border-border pt-3 space-y-1.5 text-sm">
-            <div className="flex justify-between text-muted-foreground">
-              <span>재료비</span><span>{formatW(quote.breakdown.materialCost)}</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>공임비 (수작업)</span><span>{formatW(quote.breakdown.laborCost)}</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>셋업비 (초기비용)</span><span>{formatW(quote.breakdown.setupCost)}</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>마진 ({Math.round(quote.margin * 100)}%)</span><span>{formatW(quote.breakdown.marginAmount)}</span>
-            </div>
-          </div>
-
-          <div className="border-t border-border mt-3 pt-4">
-            <div className="flex justify-between items-end">
-              <div>
-                <p className="text-xs text-muted-foreground">총 견적가 ({sets}세트)</p>
-                <p className="text-2xl font-bold text-primary">{formatW(quote.total)}</p>
+              <div className="flex justify-between text-muted-foreground">
+                <span>공임비</span><span>{formatW(quote.breakdown.laborCost)}</span>
               </div>
-              <div className="text-right">
-                <p className="text-xs text-muted-foreground">세트당 단가</p>
-                <p className="text-lg font-bold text-card-foreground">{formatW(quote.unitPrice)}</p>
+              <div className="flex justify-between text-muted-foreground">
+                <span>셋업비</span><span>{formatW(quote.breakdown.setupCost)}</span>
+              </div>
+              {quote.customTotal > 0 && (
+                <div className="flex justify-between text-muted-foreground">
+                  <span>직접입력 합계</span><span>{formatW(quote.customTotal)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-muted-foreground">
+                <span>마진 ({Math.round(quote.margin * 100)}%)</span><span>{formatW(quote.breakdown.marginAmount)}</span>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 p-3 rounded-lg bg-secondary text-xs text-secondary-foreground">
-            <p className="font-medium mb-1">📋 견적 참고사항</p>
-            <ul className="space-y-0.5 text-muted-foreground">
-              <li>• 실제 견적은 디자인 복잡도에 따라 변동 가능</li>
-              <li>• 셋업비는 최초 1회만 발생</li>
-              <li>• {sets <= 10 ? '소량 주문은 100% 수작업으로 공임비 비중이 높습니다' : sets <= 100 ? '중량 주문은 반자동 공정이 적용됩니다' : '대량 주문은 양산 공정으로 단가가 절감됩니다'}</li>
-              <li>• VAT 별도</li>
-            </ul>
-          </div>
-        </>
+            <div className="border-t border-border mt-3 pt-3">
+              <div className="flex justify-between items-end">
+                <div>
+                  <p className="text-xs text-muted-foreground">총 견적가 ({sets}세트)</p>
+                  <p className="text-xl font-bold text-primary">{formatW(quote.total)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-muted-foreground">세트당 단가</p>
+                  <p className="text-base font-bold text-card-foreground">{formatW(quote.unitPrice)}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 p-2.5 rounded-md bg-muted text-xs text-muted-foreground">
+              <p className="font-medium mb-1">참고사항</p>
+              <ul className="space-y-0.5">
+                <li>• 디자인 복잡도에 따라 변동 가능</li>
+                <li>• 셋업비는 최초 1회 발생</li>
+                <li>• VAT 별도</li>
+              </ul>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Export buttons */}
+      {hasItems && (
+        <div className="px-5 pb-4 flex gap-2 no-print">
+          <button
+            onClick={exportAsImage}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+          >
+            <FileImage className="w-4 h-4" /> 이미지 저장
+          </button>
+        </div>
       )}
     </motion.div>
   );

@@ -14,8 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
-        body: ['Noto Sans KR', 'sans-serif'],
+        body: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
