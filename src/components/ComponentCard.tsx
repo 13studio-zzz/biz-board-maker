@@ -22,13 +22,18 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
       onDeselect();
     } else {
       const defaultQty = component.defaultQuantity || 1;
+      // Reset finishing to first allowed option if current is not allowed
+      let finishing = selected?.finishing || component.finishingOptions?.[0]?.id;
+      if (opt.allowedFinishings && finishing && !opt.allowedFinishings.includes(finishing)) {
+        finishing = opt.allowedFinishings[0];
+      }
       onSelect({
         optionId: opt.id,
         quantity: component.needsQuantity ? defaultQty : 1,
         size: selected?.size,
         coating: selected?.coating || 'none',
         material: selected?.material || component.materialOptions?.[0]?.id,
-        finishing: selected?.finishing || component.finishingOptions?.[0]?.id,
+        finishing,
         magnetLock: selected?.magnetLock,
         stickerAttach: selected?.stickerAttach,
       });
