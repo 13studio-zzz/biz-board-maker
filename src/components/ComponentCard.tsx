@@ -125,16 +125,16 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                     {/* 상세설정 - 선택된 옵션 바로 아래 표시 */}
                     {isActive && selected && (
                       <div className="mt-1 space-y-3 rounded-lg bg-[hsl(220,20%,14%)] p-4 border border-[hsl(220,15%,25%)]">
-                        <p className="text-xs font-semibold text-[hsl(220,10%,70%)] uppercase tracking-wide">상세 설정</p>
+                        <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">상세 설정</p>
 
                         {/* Size fields */}
                         {showSize && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">사이즈 (mm)</label>
+                            <label className="text-xs text-white mb-1 block">사이즈 (mm)</label>
                             <div className="flex items-center gap-1.5">
                               {sizeFields.map((field, idx) => (
                                 <div key={field} className="flex items-center gap-1.5">
-                                  {idx > 0 && <span className="text-xs text-[hsl(220,10%,55%)]">×</span>}
+                                  {idx > 0 && <span className="text-xs text-white/50">×</span>}
                                   <input
                                     type="text"
                                     inputMode="numeric"
@@ -161,7 +161,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Quantity */}
                         {component.needsQuantity && (
                           <div className="flex items-center gap-3">
-                            <label className="text-xs text-[hsl(220,10%,65%)] whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
+                            <label className="text-xs text-white whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
                             <input
                               type="text"
                               inputMode="numeric"
@@ -181,7 +181,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Material */}
                         {component.hasMaterial && component.materialOptions && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">재질</label>
+                            <label className="text-xs text-white mb-1 block">재질</label>
                             <div className="flex flex-wrap gap-1.5">
                               {component.materialOptions.map(mat => (
                                 <button
@@ -190,7 +190,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.material === mat.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
                                   }`}
                                 >
                                   {mat.label}
@@ -203,7 +203,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Finishing */}
                         {component.hasFinishing && component.finishingOptions && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">후가공</label>
+                            <label className="text-xs text-white mb-1 block">후가공</label>
                             <div className="flex flex-wrap gap-1.5">
                               {component.finishingOptions.map(fin => (
                                 <button
@@ -212,7 +212,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     selected.finishing === fin.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
                                   }`}
                                 >
                                   {fin.label}
@@ -230,7 +230,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Coating */}
                         {component.hasCoating && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">코팅</label>
+                            <label className="text-xs text-white mb-1 block">코팅</label>
                             <div className="flex flex-wrap gap-1.5">
                               {[
                                 { id: 'none', label: '없음' },
@@ -243,7 +243,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                   className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-all ${
                                     (selected.coating || 'none') === c.id
                                       ? 'border-primary bg-primary/20 text-primary'
-                                      : 'border-[hsl(220,15%,30%)] text-[hsl(220,10%,60%)] hover:border-primary/40'
+                                      : 'border-[hsl(220,15%,30%)] text-white/70 hover:border-primary/40'
                                   }`}
                                 >
                                   {c.label}
@@ -262,7 +262,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onChange={e => update({ stickerAttach: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-[hsl(220,10%,80%)]">스티커 부착</span>
+                            <span className="text-xs text-white">스티커 부착</span>
                           </label>
                         )}
 
@@ -275,7 +275,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onChange={e => update({ magnetLock: e.target.checked })}
                               className="rounded border-[hsl(220,15%,30%)]"
                             />
-                            <span className="text-xs text-[hsl(220,10%,80%)]">자석 여닫이 추가 (+₩3,000)</span>
+                            <span className="text-xs text-white">자석 여닫이 추가 (+₩3,000)</span>
                           </label>
                         )}
 
