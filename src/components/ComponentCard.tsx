@@ -150,7 +150,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                                         }
                                       });
                                     }}
-                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,20%,10%)] text-white text-sm text-center placeholder:text-[hsl(220,10%,40%)]"
+                                    className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,10%,90%)] text-foreground text-sm text-center placeholder:text-[hsl(220,10%,55%)]"
                                   />
                                 </div>
                               ))}
@@ -173,7 +173,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                               onBlur={() => {
                                 if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
                               }}
-                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,20%,10%)] text-white text-sm text-center"
+                              className="w-20 px-2 py-1.5 rounded-md border border-[hsl(220,15%,30%)] bg-[hsl(220,10%,90%)] text-foreground text-sm text-center"
                             />
                           </div>
                         )}
