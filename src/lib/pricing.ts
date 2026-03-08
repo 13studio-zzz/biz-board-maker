@@ -326,7 +326,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'board-fold4', label: '4단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 7000, setupCost: 60000, laborMinutes: 40 },
       { id: 'board-flat', label: '평판형 (1장)', description: '하드보드 + 인쇄', basePrice: 5500, setupCost: 35000, laborMinutes: 15 },
     ],
-    notes: ['💡 300g(스노우/아트지)는 카드 재질과 동일한 가성비 옵션입니다.'],
+    notes: ['💡 300g(스노우/아트지)는 인쇄+코팅+라운딩만 하는 저가 개인보드판 방식입니다.'],
   },
   {
     id: 'cards',
