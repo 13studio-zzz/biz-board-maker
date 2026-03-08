@@ -11,6 +11,7 @@ const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
 
 const Index = () => {
   const [sets, setSets] = useState(1);
+  const [pricingTiers, setPricingTiers] = useState<PricingTier[]>(loadTiers);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
   const [enabledComponents, setEnabledComponents] = useState<Record<string, boolean>>(
