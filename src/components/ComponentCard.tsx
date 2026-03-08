@@ -230,7 +230,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         {/* Coating */}
                         {component.hasCoating && (
                           <div>
-                            <label className="text-xs text-[hsl(220,10%,65%)] mb-1 block">코팅</label>
+                            <label className="text-xs text-white mb-1 block">코팅</label>
                             <div className="flex flex-wrap gap-1.5">
                               {[
                                 { id: 'none', label: '없음' },
