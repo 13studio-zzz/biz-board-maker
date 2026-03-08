@@ -79,7 +79,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
         <div className="flex items-center gap-3">
           <span className="text-2xl">{component.icon}</span>
           <div>
-            <h3 className={`font-bold text-[15px] tracking-tight ${isSelected ? 'text-primary-foreground' : 'text-foreground'}`} style={isSelected ? { color: '#1a7a3a' } : {}}>
+            <h3 className={`font-bold text-[15px] tracking-tight ${isSelected ? 'text-emerald-700' : 'text-foreground'}`}>
               {component.name}
             </h3>
             <p className="text-xs mt-0.5 text-muted-foreground">{component.description}</p>
