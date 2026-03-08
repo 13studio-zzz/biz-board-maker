@@ -495,13 +495,13 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'fin-fold', label: '접지', priceAdd: 30 },
       { id: 'fin-leaflet', label: '리플렛', priceAdd: 80 },
       { id: 'fin-staple', label: '중철', priceAdd: 200, note: '⚠️ 중철 제본은 페이지 수가 4의 배수여야 합니다.' },
-      { id: 'fin-perfect', label: '무선제본', priceAdd: 500 },
+      { id: 'fin-perfect', label: '무선제본', priceAdd: 500, note: '⚠️ 1,000세트 이상 시 추천합니다.' },
     ],
     sortOrder: 8,
     options: [
-      { id: 'manual-basic', label: '기본 매뉴얼', description: '양면 컬러 인쇄', basePrice: 150, setupCost: 5000, laborMinutes: 1.5 },
-      { id: 'manual-booklet', label: '소책자 (8~16p)', description: '양면 컬러 인쇄', basePrice: 500, setupCost: 10000, laborMinutes: 3 },
-      { id: 'manual-premium', label: '프리미엄 북 (24p+)', description: '고급지, 양면 컬러 인쇄', basePrice: 1200, setupCost: 20000, laborMinutes: 6 },
+      { id: 'manual-basic', label: '기본 매뉴얼', description: '양면 컬러 인쇄', basePrice: 150, setupCost: 5000, laborMinutes: 1.5, allowedFinishings: ['fin-single', 'fin-fold', 'fin-leaflet'] },
+      { id: 'manual-booklet', label: '소책자 (4~16p)', description: '양면 컬러 인쇄', basePrice: 500, setupCost: 10000, laborMinutes: 3, allowedFinishings: ['fin-staple'] },
+      { id: 'manual-premium', label: '프리미엄 북 (24p+)', description: '고급지, 양면 컬러 인쇄', basePrice: 1200, setupCost: 20000, laborMinutes: 6, allowedFinishings: ['fin-staple', 'fin-perfect'] },
     ],
   },
   {
