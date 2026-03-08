@@ -215,7 +215,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                             : component.finishingOptions!;
                           return filtered.length > 0 ? (
                             <div>
-                              <label className="text-xs text-white mb-1 block">후가공</label>
+                              <label className="text-xs text-foreground mb-1 block">후가공</label>
                               <div className="flex flex-wrap gap-1.5">
                                 {filtered.map(fin => (
                                   <button
