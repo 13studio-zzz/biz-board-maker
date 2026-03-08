@@ -125,7 +125,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                     {/* 상세설정 - 선택된 옵션 바로 아래 표시 */}
                     {isActive && selected && (
                       <div className="mt-1 space-y-3 rounded-lg bg-[hsl(220,20%,14%)] p-4 border border-[hsl(220,15%,25%)]">
-                        <p className="text-xs font-semibold text-[hsl(220,10%,70%)] uppercase tracking-wide">상세 설정</p>
+                        <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">상세 설정</p>
 
                         {/* Size fields */}
                         {showSize && (
