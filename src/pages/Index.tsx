@@ -8,11 +8,11 @@ import { BOARD_GAME_COMPONENTS, calculateQuote, type QuoteItem, type CustomItem,
 const QUANTITY_PRESETS = [1, 3, 5, 10, 30, 50, 100, 300, 500, 1000];
 
 const Index = () => {
-  const [sets, setSets] = useState(10);
+  const [sets, setSets] = useState(1);
   const [projectName, setProjectName] = useState('');
   const [clientName, setClientName] = useState('');
   const [enabledComponents, setEnabledComponents] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(BOARD_GAME_COMPONENTS.map(c => [c.id, true]))
+    () => Object.fromEntries(BOARD_GAME_COMPONENTS.map(c => [c.id, c.id === 'cards']))
   );
   const [selections, setSelections] = useState<Record<string, Selection>>({});
   const [customItemsMap, setCustomItemsMap] = useState<Record<string, CustomItem[]>>({});
