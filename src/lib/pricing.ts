@@ -415,7 +415,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     defaultQuantity: 2,
     sortOrder: 4,
     options: [
-      { id: 'dice-standard', label: '표준 D6 (16mm)', description: '아크릴 기성품, 숫자 각인', basePrice: 500, setupCost: 0, laborMinutes: 2 },
+      { id: 'dice-standard', label: '표준 D6 (16mm)', description: '아크릴 기성품, 숫자 각인', basePrice: 350, setupCost: 0, laborMinutes: 1 },
       { id: 'dice-custom', label: '커스텀 각인 D6', description: '16mm, 면별 커스텀 심볼 레이저 각인', basePrice: 1500, setupCost: 30000, laborMinutes: 5 },
       { id: 'dice-wood', label: '원목 주사위', description: '20mm 자작나무, CNC 가공 + 도장', basePrice: 3000, setupCost: 20000, laborMinutes: 15 },
       { id: 'dice-poly', label: '다면체 세트 (D4~D20)', description: '7종 세트, 아크릴 기성품', basePrice: 3500, setupCost: 0, laborMinutes: 3 },
