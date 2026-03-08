@@ -9,6 +9,7 @@ export interface ComponentOption {
   options: SubOption[];
   allowCustom?: boolean;
   needsSize?: boolean;
+  sizeFields?: ('w' | 'h' | 'd')[]; // which size fields to show, defaults to ['w','h','d']
   needsQuantity?: boolean;
   quantityLabel?: string;
   defaultQuantity?: number;
@@ -19,7 +20,9 @@ export interface ComponentOption {
   finishingOptions?: { id: string; label: string; priceAdd: number; note?: string }[];
   hasMagnetOption?: boolean;
   magnetPriceAdd?: number;
+  hasSticker?: boolean;
   notes?: string[];
+  sortOrder: number;
 }
 
 export interface SubOption {
@@ -43,10 +46,11 @@ export interface Selection {
   optionId: string;
   quantity: number;
   size?: { w: string; h: string; d: string };
-  coating?: string; // 'none' | 'matte' | 'glossy'
+  coating?: string;
   material?: string;
   finishing?: string;
   magnetLock?: boolean;
+  stickerAttach?: boolean;
 }
 
 export interface QuoteItem {
@@ -58,6 +62,7 @@ export interface QuoteItem {
   material?: string;
   finishing?: string;
   magnetLock?: boolean;
+  stickerAttach?: boolean;
 }
 
 export interface QuoteResult {
@@ -90,6 +95,8 @@ export interface QuoteLineItem {
   material?: string;
   finishing?: string;
   magnetLock?: boolean;
+  stickerAttach?: boolean;
+  sortOrder: number;
 }
 
 // 수량 구간별 할인율
@@ -140,6 +147,29 @@ export function getCoatingLabel(coating?: string): string {
   return coating ? COATING_LABEL[coating] || '' : '';
 }
 
+// 싸바리 사이즈 추가금 계산
+function getSsabariSizeSurcharge(size?: { w: string; h: string; d: string }): number {
+  if (!size) return 0;
+  const w = parseInt(size.w) || 0;
+  const h = parseInt(size.h) || 0;
+  const d = parseInt(size.d) || 0;
+  const maxDim = Math.max(w, h);
+  const volume = w * h * Math.max(d, 1);
+
+  let surcharge = 0;
+  // 대형 사이즈 할증
+  if (maxDim > 350) surcharge += 3000;
+  if (maxDim > 450) surcharge += 5000;
+  // 부피 기준 할증
+  if (volume > 5000000) surcharge += 2000;
+  if (volume > 10000000) surcharge += 4000;
+  // 높이 할증
+  if (d > 80) surcharge += 2000;
+  if (d > 120) surcharge += 3000;
+
+  return surcharge;
+}
+
 export function calculateQuote(
   items: QuoteItem[],
   sets: number,
@@ -163,27 +193,25 @@ export function calculateQuote(
 
     const qty = item.quantity || 1;
 
-    // Material multiplier from material option
     let materialMultiplier = 1;
     if (item.material && comp.materialOptions) {
       const mat = comp.materialOptions.find(m => m.id === item.material);
       if (mat) materialMultiplier = mat.priceMultiplier;
     }
 
-    // Finishing price add
     let finishingAdd = 0;
     if (item.finishing && comp.finishingOptions) {
       const fin = comp.finishingOptions.find(f => f.id === item.finishing);
       if (fin) finishingAdd = fin.priceAdd;
     }
 
-    // Coating price
-    const coatingAdd = COATING_PRICE[item.coating || 'none'] || 0;
-
-    // Magnet lock add
+    const coatingAdd = comp.hasCoating ? (COATING_PRICE[item.coating || 'none'] || 0) : 0;
     const magnetAdd = item.magnetLock && comp.magnetPriceAdd ? comp.magnetPriceAdd : 0;
 
-    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd);
+    // Ssabari size surcharge
+    const ssabariSurcharge = item.optionId === 'pkg-ssabari' ? getSsabariSizeSurcharge(item.size) : 0;
+
+    const baseUnitPrice = (opt.basePrice * materialMultiplier + finishingAdd + coatingAdd + magnetAdd + ssabariSurcharge);
     const materialPerSet = baseUnitPrice * qty * volumeDiscount;
     const laborPerSet = (opt.laborMinutes * qty / 60) * LABOR_RATE_PER_HOUR * handmadeSurcharge;
     const setupForAll = opt.setupCost;
@@ -193,9 +221,10 @@ export function calculateQuote(
 
     // Format size
     let sizeStr: string | undefined;
-    if (item.size && (item.size.w || item.size.h || item.size.d)) {
-      const parts = [item.size.w, item.size.h, item.size.d].filter(Boolean);
-      sizeStr = parts.join('×') + 'mm';
+    if (item.size) {
+      const fields = comp.sizeFields || ['w', 'h', 'd'];
+      const parts = fields.map(f => item.size![f]).filter(Boolean);
+      if (parts.length > 0) sizeStr = parts.join('×') + 'mm';
     }
 
     lineItems.push({
@@ -206,16 +235,21 @@ export function calculateQuote(
       setupCost: Math.round(setupForAll),
       subtotal: Math.round(totalMaterialForSets + totalLaborForSets + setupForAll),
       size: sizeStr,
-      coating: item.coating && item.coating !== 'none' ? getCoatingLabel(item.coating) : undefined,
+      coating: comp.hasCoating && item.coating && item.coating !== 'none' ? getCoatingLabel(item.coating) : undefined,
       material: item.material ? comp.materialOptions?.find(m => m.id === item.material)?.label : undefined,
       finishing: item.finishing ? comp.finishingOptions?.find(f => f.id === item.finishing)?.label : undefined,
       magnetLock: item.magnetLock,
+      stickerAttach: item.stickerAttach,
+      sortOrder: comp.sortOrder,
     });
 
     totalMaterial += totalMaterialForSets;
     totalLabor += totalLaborForSets;
     totalSetup += setupForAll;
   }
+
+  // Sort by component sortOrder
+  lineItems.sort((a, b) => a.sortOrder - b.sortOrder);
 
   const subtotal = totalMaterial + totalLabor + totalSetup;
   const marginAmount = subtotal * marginRate;
@@ -258,15 +292,17 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     icon: '📦',
     description: '게임 박스 선택',
     needsSize: true,
+    sizeFields: ['w', 'h', 'd'],
     hasCoating: true,
     hasMagnetOption: true,
     magnetPriceAdd: 3000,
+    sortOrder: 1,
     options: [
       { id: 'pkg-ready-s', label: '기성품 박스 (소)', description: '시중 규격 소형 박스', basePrice: 1200, setupCost: 0, laborMinutes: 3 },
       { id: 'pkg-ready-m', label: '기성품 박스 (중)', description: '시중 규격 중형 박스', basePrice: 1800, setupCost: 0, laborMinutes: 5 },
       { id: 'pkg-ready-l', label: '기성품 박스 (대)', description: '시중 규격 대형 박스', basePrice: 2500, setupCost: 0, laborMinutes: 5 },
       { id: 'pkg-minicard', label: '미니카드 박스', description: '카드게임용 소형 박스', basePrice: 2000, setupCost: 20000, laborMinutes: 10 },
-      { id: 'pkg-ssabari', label: '싸바리 박스', description: '아트지 인쇄 + 합지, 사이즈 맞춤 제작', basePrice: 8000, setupCost: 100000, laborMinutes: 40, note: '자석 여닫이 옵션 선택 가능' },
+      { id: 'pkg-ssabari', label: '싸바리 박스', description: '아트지 인쇄 + 합지, 사이즈 맞춤 제작', basePrice: 8000, setupCost: 100000, laborMinutes: 40, note: '자석 여닫이 옵션 선택 가능 · 대형 사이즈 시 추가금 발생' },
       { id: 'pkg-tin', label: '틴케이스', description: '금속 틴케이스, 인쇄 가능', basePrice: 5000, setupCost: 150000, laborMinutes: 10 },
     ],
   },
@@ -277,17 +313,20 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     icon: '🗺️',
     description: '메인 게임판',
     needsSize: true,
+    sizeFields: ['w', 'h'],
     hasCoating: true,
     hasMaterial: true,
     materialOptions: [
-      { id: 'mat-300g', label: '300g 판지', priceMultiplier: 1.0 },
+      { id: 'mat-300g', label: '300g (스노우/아트지)', priceMultiplier: 0.5 },
       { id: 'mat-1200g', label: '1200g (표지바리)', priceMultiplier: 1.8 },
     ],
+    sortOrder: 2,
     options: [
       { id: 'board-fold2', label: '2단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 4000, setupCost: 40000, laborMinutes: 25 },
       { id: 'board-fold4', label: '4단 접이식', description: '양면 인쇄 + 천테이프 접합', basePrice: 7000, setupCost: 60000, laborMinutes: 40 },
       { id: 'board-flat', label: '평판형 (1장)', description: '하드보드 + 인쇄', basePrice: 5500, setupCost: 35000, laborMinutes: 15 },
     ],
+    notes: ['💡 300g(스노우/아트지)는 카드 재질과 동일한 가성비 옵션입니다.'],
   },
   {
     id: 'cards',
@@ -300,6 +339,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     defaultQuantity: 54,
     allowCustom: true,
     hasCoating: true,
+    sortOrder: 3,
     options: [
       { id: 'card-58x88', label: '표준 카드 (58×88mm)', description: '300g 아트지, 양면 컬러', basePrice: 110, setupCost: 30000, laborMinutes: 0.3 },
       { id: 'card-63x88', label: '표준 카드 (63×88mm)', description: '300g 아트지, 양면 컬러', basePrice: 120, setupCost: 30000, laborMinutes: 0.3 },
@@ -317,6 +357,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     needsQuantity: true,
     quantityLabel: '주사위 개수',
     defaultQuantity: 2,
+    sortOrder: 4,
     options: [
       { id: 'dice-standard', label: '표준 D6 (16mm)', description: '아크릴 기성품, 숫자 각인', basePrice: 500, setupCost: 0, laborMinutes: 2 },
       { id: 'dice-custom', label: '커스텀 각인 D6', description: '16mm, 면별 커스텀 심볼 레이저 각인', basePrice: 1500, setupCost: 30000, laborMinutes: 5 },
@@ -333,11 +374,12 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     needsQuantity: true,
     quantityLabel: '말 개수',
     defaultQuantity: 4,
+    sortOrder: 5,
     options: [
       { id: 'meeple-thomson-s', label: '합지 톰슨 (30×50mm)', description: '합지 톰슨 다이컷 + 투명 거치대 기본 포함, 판 보유', basePrice: 200, setupCost: 0, laborMinutes: 2 },
       { id: 'meeple-thomson-m', label: '합지 톰슨 (35×50mm)', description: '합지 톰슨 다이컷 + 투명 거치대 기본 포함, 판 보유', basePrice: 250, setupCost: 0, laborMinutes: 2 },
       { id: 'meeple-wood', label: '원목 미플 (기본형)', description: '25mm, 자작나무 레이저컷 + 도색', basePrice: 800, setupCost: 15000, laborMinutes: 5 },
-      { id: 'meeple-acrylic', label: '아크릴 스탠디 (30mm)', description: '아크릴 + 스티커 부착 가능, 받침대 포함', basePrice: 1200, setupCost: 25000, laborMinutes: 8 },
+      { id: 'meeple-acrylic', label: '아크릴 스탠디 (30mm + 받침대)', description: '스티커 부착 가능', basePrice: 1200, setupCost: 25000, laborMinutes: 8 },
       { id: 'meeple-plastic', label: '사출 플라스틱 말', description: '금형 사출, 단색, 30mm', basePrice: 300, setupCost: 500000, laborMinutes: 1, note: '⚠️ 1,000세트 이상 권장. 소량은 기성품 사용을 추천합니다.' },
     ],
     notes: ['💡 합지 톰슨은 투명 거치대가 기본 포함됩니다.'],
@@ -350,9 +392,11 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     description: '게임 내 화폐 (장수 입력)',
     needsQuantity: true,
     needsSize: true,
+    sizeFields: ['w', 'h'],
     quantityLabel: '지폐 장수',
     defaultQuantity: 60,
     hasCoating: true,
+    sortOrder: 6,
     options: [
       { id: 'money-paper', label: '종이 지폐', description: '100g 모조지, 양면 컬러, 재단', basePrice: 30, setupCost: 15000, laborMinutes: 0.1 },
       { id: 'money-coated', label: '코팅 지폐', description: '200g 아트지, 양면 컬러', basePrice: 60, setupCost: 20000, laborMinutes: 0.15 },
@@ -366,9 +410,12 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     description: '점수·자원 토큰 등 (개수 입력)',
     needsQuantity: true,
     needsSize: true,
+    sizeFields: ['w', 'h'],
     quantityLabel: '토큰 개수',
     defaultQuantity: 20,
-    hasCoating: true,
+    hasCoating: false,
+    hasSticker: true,
+    sortOrder: 7,
     options: [
       { id: 'token-plastic', label: '플라스틱 토큰', description: '기성품, 가벼운 소재, 가성비 최고', basePrice: 100, setupCost: 0, laborMinutes: 0.5 },
       { id: 'token-cardboard', label: '판지 토큰 (펀칭)', description: '2mm 회색판지, 양면 인쇄 + 다이컷', basePrice: 80, setupCost: 50000, laborMinutes: 0.5 },
@@ -384,6 +431,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     icon: '📖',
     description: '게임 규칙 설명서',
     needsSize: true,
+    sizeFields: ['w', 'h'],
     hasCoating: true,
     hasFinishing: true,
     finishingOptions: [
@@ -393,6 +441,7 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
       { id: 'fin-staple', label: '중철', priceAdd: 500, note: '⚠️ 중철 제본은 페이지 수가 4의 배수여야 합니다.' },
       { id: 'fin-perfect', label: '무선제본', priceAdd: 1000 },
     ],
+    sortOrder: 8,
     options: [
       { id: 'manual-basic', label: '기본 매뉴얼', description: '양면 컬러 인쇄', basePrice: 300, setupCost: 15000, laborMinutes: 3 },
       { id: 'manual-booklet', label: '소책자 (8~16p)', description: '양면 컬러 인쇄', basePrice: 1000, setupCost: 30000, laborMinutes: 6 },
@@ -409,8 +458,10 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     needsQuantity: true,
     quantityLabel: '개수',
     defaultQuantity: 1,
+    sortOrder: 9,
     options: [
-      { id: 'extra-tray', label: '카드 트레이', description: '진공 성형 PET 트레이', basePrice: 2000, setupCost: 80000, laborMinutes: 5 },
+      { id: 'extra-boxtray', label: '박스 트레이 (종이)', description: '종이 합지 트레이, 간단한 칸 구성', basePrice: 800, setupCost: 15000, laborMinutes: 5 },
+      { id: 'extra-pettray', label: 'PET 트레이 (진공성형)', description: '진공 성형 플라스틱 트레이', basePrice: 2500, setupCost: 150000, laborMinutes: 3, note: '⚠️ 1,000세트 이상 권장. 소량은 종이 트레이 사용을 추천합니다.' },
       { id: 'extra-divider', label: '칸막이', description: '골판지 또는 합지 칸막이', basePrice: 1000, setupCost: 20000, laborMinutes: 5 },
       { id: 'extra-timer', label: '모래시계 (30초/1분)', description: '기성품 모래시계', basePrice: 1500, setupCost: 0, laborMinutes: 1 },
       { id: 'extra-marker', label: '보드마카', description: '보드용 마커펜', basePrice: 800, setupCost: 0, laborMinutes: 1 },

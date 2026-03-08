@@ -41,6 +41,7 @@ const Index = () => {
       material: sel.material,
       finishing: sel.finishing,
       magnetLock: sel.magnetLock,
+      stickerAttach: sel.stickerAttach,
     })),
     [selections]
   );

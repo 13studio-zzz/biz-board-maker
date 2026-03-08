@@ -64,7 +64,6 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
                     </span>
                     <span className="font-semibold text-card-foreground whitespace-nowrap">{formatW(item.subtotal)}</span>
                   </div>
-                  {/* Details */}
                   <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
                     {item.size && (
                       <span className="text-xs text-muted-foreground">📐 {item.size}</span>
@@ -80,6 +79,9 @@ const QuoteSummary = ({ quote, sets, projectName, clientName }: Props) => {
                     )}
                     {item.magnetLock && (
                       <span className="text-xs text-muted-foreground">🧲 자석 여닫이</span>
+                    )}
+                    {item.stickerAttach && (
+                      <span className="text-xs text-muted-foreground">🏷️ 스티커 부착</span>
                     )}
                   </div>
                 </div>

@@ -30,6 +30,7 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
         material: selected?.material || component.materialOptions?.[0]?.id,
         finishing: selected?.finishing || component.finishingOptions?.[0]?.id,
         magnetLock: selected?.magnetLock,
+        stickerAttach: selected?.stickerAttach,
       });
     }
   };
@@ -55,12 +56,14 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
   };
 
   const activeCount = (isSelected ? 1 : 0) + customItems.filter(ci => ci.name).length;
-  const selectedOpt = selected ? component.options.find(o => o.id === selected.optionId) : null;
 
   // Show magnet option only for 싸바리
   const showMagnet = component.hasMagnetOption && selected?.optionId === 'pkg-ssabari';
   // Show size input for 비규격 카드 or needsSize components
   const showSize = component.needsSize || (selected?.optionId === 'card-custom');
+
+  const sizeFields = component.sizeFields || ['w', 'h', 'd'];
+  const sizeLabels: Record<string, string> = { w: '가로', h: '세로', d: '높이' };
 
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
@@ -129,35 +132,36 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
 
               {/* Additional options when selected */}
               {selected && (
-                <div className="space-y-3 pt-2 border-t border-border">
-                  {/* Size: W × H × D */}
+                <div className="space-y-3 pt-3 mt-2 rounded-lg bg-muted/40 p-3 border border-border/50">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">상세 설정</p>
+
+                  {/* Size fields */}
                   {showSize && (
                     <div>
                       <label className="text-xs text-muted-foreground mb-1 block">사이즈 (mm)</label>
                       <div className="flex items-center gap-1.5">
-                        <input
-                          type="text"
-                          placeholder="가로"
-                          value={selected.size?.w || ''}
-                          onChange={e => update({ size: { w: e.target.value, h: selected.size?.h || '', d: selected.size?.d || '' } })}
-                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                        />
-                        <span className="text-xs text-muted-foreground">×</span>
-                        <input
-                          type="text"
-                          placeholder="세로"
-                          value={selected.size?.h || ''}
-                          onChange={e => update({ size: { w: selected.size?.w || '', h: e.target.value, d: selected.size?.d || '' } })}
-                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                        />
-                        <span className="text-xs text-muted-foreground">×</span>
-                        <input
-                          type="text"
-                          placeholder="높이"
-                          value={selected.size?.d || ''}
-                          onChange={e => update({ size: { w: selected.size?.w || '', h: selected.size?.h || '', d: e.target.value } })}
-                          className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
-                        />
+                        {sizeFields.map((field, idx) => (
+                          <div key={field} className="flex items-center gap-1.5">
+                            {idx > 0 && <span className="text-xs text-muted-foreground">×</span>}
+                            <input
+                              type="text"
+                              inputMode="numeric"
+                              placeholder={sizeLabels[field]}
+                              value={selected.size?.[field] || ''}
+                              onChange={e => {
+                                const val = e.target.value.replace(/[^0-9]/g, '');
+                                update({
+                                  size: {
+                                    w: field === 'w' ? val : (selected.size?.w || ''),
+                                    h: field === 'h' ? val : (selected.size?.h || ''),
+                                    d: field === 'd' ? val : (selected.size?.d || ''),
+                                  }
+                                });
+                              }}
+                              className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
+                            />
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
@@ -167,11 +171,16 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                     <div className="flex items-center gap-3">
                       <label className="text-xs text-muted-foreground whitespace-nowrap">{component.quantityLabel || '수량'}:</label>
                       <input
-                        type="number"
-                        min={1}
-                        max={9999}
-                        value={selected.quantity}
-                        onChange={e => update({ quantity: Math.max(1, parseInt(e.target.value) || 1) })}
+                        type="text"
+                        inputMode="numeric"
+                        value={selected.quantity === 0 ? '' : selected.quantity}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          update({ quantity: val === '' ? 0 : Math.min(9999, parseInt(val)) });
+                        }}
+                        onBlur={() => {
+                          if (!selected.quantity || selected.quantity < 1) update({ quantity: 1 });
+                        }}
                         className="w-20 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
                       />
                     </div>
@@ -252,6 +261,19 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                     </div>
                   )}
 
+                  {/* Sticker attach (for tokens) */}
+                  {component.hasSticker && (
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selected.stickerAttach || false}
+                        onChange={e => update({ stickerAttach: e.target.checked })}
+                        className="rounded border-border"
+                      />
+                      <span className="text-xs text-card-foreground">스티커 부착</span>
+                    </label>
+                  )}
+
                   {/* Magnet lock */}
                   {showMagnet && (
                     <label className="flex items-center gap-2 cursor-pointer">
@@ -284,18 +306,28 @@ const ComponentCard = ({ component, selected, onSelect, onDeselect, customItems 
                         className="flex-1 min-w-0 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm"
                       />
                       <input
-                        type="number"
+                        type="text"
+                        inputMode="numeric"
                         placeholder="단가"
                         value={ci.unitPrice || ''}
-                        onChange={e => updateCustomItem(ci.id, 'unitPrice', parseInt(e.target.value) || 0)}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          updateCustomItem(ci.id, 'unitPrice', val === '' ? 0 : parseInt(val));
+                        }}
                         className="w-24 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-right"
                       />
                       <span className="text-xs text-muted-foreground">×</span>
                       <input
-                        type="number"
-                        min={1}
-                        value={ci.quantity}
-                        onChange={e => updateCustomItem(ci.id, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
+                        type="text"
+                        inputMode="numeric"
+                        value={ci.quantity === 0 ? '' : ci.quantity}
+                        onChange={e => {
+                          const val = e.target.value.replace(/[^0-9]/g, '');
+                          updateCustomItem(ci.id, 'quantity', val === '' ? 0 : parseInt(val));
+                        }}
+                        onBlur={() => {
+                          if (!ci.quantity || ci.quantity < 1) updateCustomItem(ci.id, 'quantity', 1);
+                        }}
                         className="w-16 px-2 py-1.5 rounded-md border border-input bg-background text-foreground text-sm text-center"
                       />
                       <button onClick={() => removeCustomItem(ci.id)} className="p-1 text-muted-foreground hover:text-destructive">
