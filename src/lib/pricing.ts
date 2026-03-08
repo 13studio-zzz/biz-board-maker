@@ -300,11 +300,11 @@ export const BOARD_GAME_COMPONENTS: ComponentOption[] = [
     magnetPriceAdd: 3000,
     sortOrder: 1,
     options: [
+      { id: 'pkg-ssabari', label: '싸바리 박스', description: '아트지 인쇄 + 합지, 사이즈 맞춤 제작', basePrice: 8000, setupCost: 100000, laborMinutes: 40, note: '자석 여닫이 옵션 선택 가능 · 대형 사이즈 시 추가금 발생' },
       { id: 'pkg-ready-s', label: '기성품 박스 (소)', description: '시중 규격 소형 박스', basePrice: 1200, setupCost: 0, laborMinutes: 3 },
       { id: 'pkg-ready-m', label: '기성품 박스 (중)', description: '시중 규격 중형 박스', basePrice: 1800, setupCost: 0, laborMinutes: 5 },
       { id: 'pkg-ready-l', label: '기성품 박스 (대)', description: '시중 규격 대형 박스', basePrice: 2500, setupCost: 0, laborMinutes: 5 },
       { id: 'pkg-minicard', label: '미니카드 박스', description: '카드게임용 소형 박스', basePrice: 2000, setupCost: 20000, laborMinutes: 10 },
-      { id: 'pkg-ssabari', label: '싸바리 박스', description: '아트지 인쇄 + 합지, 사이즈 맞춤 제작', basePrice: 8000, setupCost: 100000, laborMinutes: 40, note: '자석 여닫이 옵션 선택 가능 · 대형 사이즈 시 추가금 발생' },
       { id: 'pkg-tin', label: '틴케이스', description: '금속 틴케이스, 인쇄 가능', basePrice: 5000, setupCost: 150000, laborMinutes: 10 },
     ],
   },
