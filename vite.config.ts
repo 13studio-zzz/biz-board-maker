@@ -5,8 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // 깃허브 페이지 배포를 위한 경로 설정 추가
-  base: "/biz-board-maker/", 
+  base: "/biz-board-maker/",
   server: {
     host: "::",
     port: 8080,
